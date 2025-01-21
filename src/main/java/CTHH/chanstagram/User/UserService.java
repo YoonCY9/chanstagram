@@ -1,5 +1,7 @@
 package CTHH.chanstagram.User;
 
+import CTHH.chanstagram.SecurityUtils;
+import CTHH.chanstagram.User.DTO.LoginResponse;
 import CTHH.chanstagram.User.DTO.UserRequest;
 import CTHH.chanstagram.User.DTO.UserResponse;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,11 @@ public class UserService {
 
     //회원가입
     public UserRequest signUp(UserResponse userResponse) {
+        String hashedPassword = SecurityUtils.sha256EncryptHex2(userResponse.password());
         User user = new User(userResponse.userName(),
                 userResponse.nickName(),
                 userResponse.loginId(),
-                userResponse.password(),
+                hashedPassword,
                 userResponse.gender(),
                 userResponse.birth(),
                 userResponse.content(),
