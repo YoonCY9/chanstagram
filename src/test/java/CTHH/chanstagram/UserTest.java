@@ -1,7 +1,7 @@
 package CTHH.chanstagram;
 
 import CTHH.chanstagram.User.DTO.LoginRequest;
-import CTHH.chanstagram.User.DTO.UserRequest;
+import CTHH.chanstagram.User.DTO.UserDetailRequest;
 import CTHH.chanstagram.User.Gender;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -28,7 +28,7 @@ public class UserTest {
         RestAssured
                 .given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new UserRequest("윤태우", "youn", "younId", "11111", Gender.Man,
+                .body(new UserDetailRequest("윤태우", "youn", "younId", "11111", Gender.Man,
                         LocalDate.parse("2001-08-08"), "잘부탁드립니다!", "ImageUrl", "01074877796"))
                 .when()
                 .post("/users")
@@ -41,7 +41,7 @@ public class UserTest {
         RestAssured
                 .given().log().all()
                 .contentType(ContentType.JSON)
-                .body(new UserRequest("윤태우", "youn", "younId", "11111", Gender.Man,
+                .body(new UserDetailRequest("윤태우", "youn", "younId", "11111", Gender.Man,
                         LocalDate.parse("2001-08-08"), "잘부탁드립니다!", "ImageUrl", "01074877796"))
                 .when()
                 .post("/users")

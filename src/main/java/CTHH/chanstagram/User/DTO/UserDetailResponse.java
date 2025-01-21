@@ -4,7 +4,7 @@ import CTHH.chanstagram.User.Gender;
 
 import java.time.LocalDate;
 
-public record UserResponse(
+public record UserDetailResponse(
         String userName,
         String nickName,
         String loginId,
