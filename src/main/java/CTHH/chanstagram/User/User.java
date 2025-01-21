@@ -1,10 +1,12 @@
 package CTHH.chanstagram.User;
 
 import CTHH.chanstagram.BaseEntity;
+import CTHH.chanstagram.SecurityUtils;
 import jakarta.persistence.*;
 import org.hibernate.annotations.GeneratedColumn;
 
 import java.time.LocalDate;
+import java.util.NoSuchElementException;
 
 @Entity
 @Table(name = "users")
@@ -86,5 +88,12 @@ public class User extends BaseEntity {
 
     public String getPhoneNumber() {
         return phoneNumber;
+    }
+
+    //입력 받은 비밀번호와 저장된 비밀번호 조회
+    public void findByPassword(String password) {
+        if (!this.getPassword().equals(SecurityUtils.sha256EncryptHex2(password))) {
+            throw new NoSuchElementException("ID 혹은 비밀번호가 틀립니다.");
+        }
     }
 }
