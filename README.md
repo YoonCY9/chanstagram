@@ -8,7 +8,7 @@
 
 # API Spec
 
-### user(사용자) 필드
+### user(사용자) 필드 !!!
 
 - userName(사용자 이름)
 - nickName(닉네임) unique
