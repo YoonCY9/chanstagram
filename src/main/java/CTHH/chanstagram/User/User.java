@@ -96,4 +96,32 @@ public class User extends BaseEntity {
             throw new NoSuchElementException("ID 혹은 비밀번호가 틀립니다.");
         }
     }
+
+    public void updateUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void updateNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public void updateGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void updateBirth(LocalDate birth) {
+        this.birth = birth;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
+    public void updateProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 }

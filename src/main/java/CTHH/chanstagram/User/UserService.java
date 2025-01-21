@@ -3,7 +3,8 @@ package CTHH.chanstagram.User;
 import CTHH.chanstagram.Comment.CommentRepository;
 import CTHH.chanstagram.SecurityUtils;
 import CTHH.chanstagram.User.DTO.LoginRequest;
-import CTHH.chanstagram.User.DTO.UserResponse;
+import CTHH.chanstagram.User.DTO.UserDetailResponse;
+import CTHH.chanstagram.User.DTO.UserDetailRequest;
 import CTHH.chanstagram.User.DTO.UserRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -27,19 +28,19 @@ public class UserService {
     }
 
     //회원가입
-    public UserResponse signUp(UserRequest userRequest) {
-        String hashedPassword = SecurityUtils.sha256EncryptHex2(userRequest.password());
-        User user = new User(userRequest.userName(),
-                userRequest.nickName(),
-                userRequest.loginId(),
+    public UserDetailResponse signUp(UserDetailRequest userDetailRequest) {
+        String hashedPassword = SecurityUtils.sha256EncryptHex2(userDetailRequest.password());
+        User user = new User(userDetailRequest.userName(),
+                userDetailRequest.nickName(),
+                userDetailRequest.loginId(),
                 hashedPassword,
-                userRequest.gender(),
-                userRequest.birth(),
-                userRequest.content(),
-                userRequest.profileImage(),
-                userRequest.phoneNumber());
+                userDetailRequest.gender(),
+                userDetailRequest.birth(),
+                userDetailRequest.content(),
+                userDetailRequest.profileImage(),
+                userDetailRequest.phoneNumber());
         userRepository.save(user);
-        return new UserResponse(user.getUserName(),
+        return new UserDetailResponse(user.getUserName(),
                 user.getNickName(),
                 user.getLoginId(),
                 user.getPassword(),
@@ -91,5 +92,17 @@ public class UserService {
     }
 
     //회원 수정
+    @Transactional
+    public void updateUser(String loginId, UserRequest userRequest) {
+        User user = userRepository.findById(loginId).orElseThrow(
+                () -> new NoSuchElementException("로그인 정보가 유효하지 않습니다"));
+        user.updateUserName(userRequest.userName());
+        user.updateNickName(userRequest.nickName());
+        user.updateGender(userRequest.gender());
+        user.updateBirth(userRequest.birth());
+        user.updateContent(userRequest.content());
+        user.updateProfileImage(userRequest.profileImage());
+        user.updatePhoneNumber(userRequest.phoneNumber());
+    }
 }
 
