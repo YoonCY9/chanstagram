@@ -1,31 +1,35 @@
 package CTHH.chanstagram.Comment;
 
+import CTHH.chanstagram.User.User;
+import CTHH.chanstagram.User.UserRepository;
+import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.post.Post;
 import CTHH.chanstagram.post.PostRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
 
-    public void create(CreateCommentRequest request) {
+    public void create(CreateCommentRequest request,String userId) {
         Post post = postRepository.findById(request.postId())
                 .orElseThrow(() -> new NoSuchElementException("id를 찾을 수 없습니다.:" + request.postId()));
-        commentRepository.save(new Comment(request.content(),post));
+        User user = userRepository.findByLoginID(userId)
+                .orElseThrow(() -> new NoSuchElementException("id를 찾을 수 없습니다.:" + userId));
+        ;
+        commentRepository.save(new Comment(request.content(),user,post));
     }
 
-    public void update(Long commentId, UpdateCommentRequest request, String userid) {
-
-    }
-
-    public void delete(Long commentId, String userid) {
-    }
 }

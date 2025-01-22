@@ -16,11 +16,26 @@ public class CommentController {
 
     //댓글생성
     @PostMapping("/comment")
-    public void create(@RequestBody CreateCommentRequest request){
-        service.create(request);
+    public void create(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization, @RequestBody CreateCommentRequest request){
+        String userid = userService.getProfile(authorization);
+        service.create(request,userid);
     }
 
-
+    //댓글수정
+    @PutMapping("/comment/{commentId}")
+    public void update(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+                       @PathVariable Long commentId,
+                       @RequestBody UpdateCommentRequest request){
+        String userid = userService.getProfile(authorization);
+        service.update(commentId,request,userid);
+    }
+    //댓글 삭제
+    @DeleteMapping("/comment/{commentId}")
+    public void delete(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+                       @PathVariable Long commentId){
+        String userid = userService.getProfile(authorization);
+        service.deleteById(commentId,userid);
+    }
 
 
 }

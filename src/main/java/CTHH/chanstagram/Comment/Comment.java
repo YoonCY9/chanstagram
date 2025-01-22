@@ -18,9 +18,13 @@ public class Comment {
     @ManyToOne
     Post post;
 
-    public Comment(String content, Post post) {
+    public Comment(String content, User user, Post post) {
         this.content = content;
+        this.user = user;
         this.post = post;
+    }
+
+    protected Comment() {
     }
 
     public Long getId() {
