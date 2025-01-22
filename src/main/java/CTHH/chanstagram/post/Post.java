@@ -65,6 +65,7 @@ public class Post extends BaseEntity {
         }
     }
 
+    // 댓글수 증가 함수
     public void increaseCommentCount() {
         this.commentCount = commentCount++;
     }
