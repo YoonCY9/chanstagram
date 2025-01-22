@@ -22,5 +22,4 @@ public class SecurityUtils {
         return HexFormat.of().formatHex(hash);
     }
 
-
 }
