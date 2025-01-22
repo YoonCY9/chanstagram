@@ -3,10 +3,12 @@ package CTHH.chanstagram.User;
 import CTHH.chanstagram.Comment.CommentRepository;
 import CTHH.chanstagram.SecurityUtils;
 import CTHH.chanstagram.User.DTO.*;
+import CTHH.chanstagram.post.Post;
 import CTHH.chanstagram.post.PostRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -80,12 +82,13 @@ public class UserService {
     public void deleteUser(String loginId) {
         User user = userRepository.findById(loginId).orElseThrow(
                 () -> new NoSuchElementException("로그인 정보가 유효하지 않습니다"));
+        commentRepository.deleteByUser_LoginId(loginId);
+        List<Post> postIdList = postRepository.findIdByUser_LoginId(loginId);
 
-        /* loginId 로 본인이 작성한 게시글 지우기 -> 게시글에 댓글이 있다면? / 게시글에 있는 댓글들 먼저 지우기
-        1. 자신이 작성한 댓글 지우기
-        2. 자신이 작성한 게시글에 달려있는 모든 댓글 지우기
-        3. 자신이 작성한 게시글 지우기
-         */
+        for (Post post : postIdList) {
+            commentRepository.deleteAllByPostId(post.getId());
+            postRepository.delete(post);
+        }
         userRepository.delete(user);
     }
 
