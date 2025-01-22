@@ -77,9 +77,6 @@ public class PostService {
     }
 
     public PostDetailedResponse findByPostId(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(() ->
-                new NoSuchElementException("존재하지 않는 postId" + postId));
-
         List<Comment> comments = commentRepository.findByPostId(postId);
         List<CommentDetailedResponse> commentDetailedResponses =
                 comments.stream()
@@ -88,14 +85,19 @@ public class PostService {
                                 c.getContent(),
                                 c.getUser().getNickName()
                                 )).toList();
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new NoSuchElementException("존재하지 않는 postId" + postId));
 
+        User user = postRepository.findUserByPostId(postId);
+
+        UserResponse userResponse = new UserResponse(user.getNickName(), user.getProfileImage());
 
         return new PostDetailedResponse(
                 post.getId(),
                 post.getContent(),
                 post.getCommentCount(),
                 post.getImageUrl(),
-                new UserResponse(post.getUser().getNickName(), post.getUser().getProfileImage()),
+                userResponse,
                 post.getCreatedTime(),
                 post.getUpdatedTime(),
                 commentDetailedResponses

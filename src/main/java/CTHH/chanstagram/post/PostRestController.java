@@ -35,7 +35,7 @@ public class PostRestController {
         return postService.findAll();
     }
 
-    @GetMapping("/posts/{postId}")
+    @GetMapping("/posts/detailed/{postId}")
     public PostDetailedResponse findByPostId(@PathVariable Long postId) {
         return postService.findByPostId(postId);
     }
