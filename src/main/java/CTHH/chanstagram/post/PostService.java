@@ -1,5 +1,6 @@
 package CTHH.chanstagram.post;
 
+import CTHH.chanstagram.Comment.CommentRepository;
 import CTHH.chanstagram.User.JwtProvider;
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
@@ -21,10 +22,12 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CommentRepository commentRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userService) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
-        this.userRepository = userService;
+        this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional
@@ -79,9 +82,8 @@ public class PostService {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저 게시글" + postId));
         if (post.getUser().getUserName().equals(user.getUserName())) {
+            commentRepository.deleteAllByPostId(postId);
             postRepository.delete(post);
         }
     }
-
-
 }
