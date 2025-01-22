@@ -1,6 +1,7 @@
 package CTHH.chanstagram.post;
 
 import CTHH.chanstagram.BaseEntity;
+import CTHH.chanstagram.User.User;
 import jakarta.persistence.*;
 
 import java.util.List;
