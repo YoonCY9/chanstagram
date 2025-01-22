@@ -15,14 +15,14 @@ public class CommentController {
     }
 
     //댓글생성
-    @PostMapping("/comment")
+    @PostMapping("/comments")
     public void create(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization, @RequestBody CreateCommentRequest request){
         String userid = userService.getProfile(authorization);
         service.create(request,userid);
     }
 
     //댓글수정
-    @PutMapping("/comment/{commentId}")
+    @PutMapping("/comments/{commentId}")
     public void update(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                        @PathVariable Long commentId,
                        @RequestBody UpdateCommentRequest request){
@@ -30,7 +30,7 @@ public class CommentController {
         service.update(commentId,request,userid);
     }
     //댓글 삭제
-    @DeleteMapping("/comment/{commentId}")
+    @DeleteMapping("/comments/{commentId}")
     public void delete(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                        @PathVariable Long commentId){
         String userid = userService.getProfile(authorization);
