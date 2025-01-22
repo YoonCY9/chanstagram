@@ -41,5 +41,14 @@ public class CommentService {
             comment.updateContent(request.content());
         } else throw new RuntimeException("작성자가 일치하지 않습니다.");
     }
-
+    @Transactional
+    public void deleteById(Long commentId, String userId) {
+        User user = userRepository.findByLoginID(userId)
+                .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NoSuchElementException("commentId를 찾을 수 없습니다.:" + commentId));
+        if (comment.getUser().equals(user)) {
+            commentRepository.deleteById(commentId);
+        } else throw new RuntimeException("작성자가 일치하지 않습니다.");
+    }
 }
