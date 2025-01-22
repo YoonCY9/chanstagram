@@ -28,7 +28,7 @@ public class PostService {
 
     @Transactional
     public void create(CreatePost dto, String userName) {
-        User user = userRepository.findByLoginID(userName).orElseThrow(() ->
+        User user = userRepository.findByLoginId(userName).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저" + userName));
 
         Post post = new Post(dto.content(), dto.imageUrl(), user);
@@ -51,7 +51,7 @@ public class PostService {
 
     @Transactional
     public void update(Long postId, UpdatePost dto, String userName) {
-        User user = userRepository.findByLoginID(userName).orElseThrow();
+        User user = userRepository.findByLoginId(userName).orElseThrow();
 
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 게시글" + postId));
@@ -65,7 +65,7 @@ public class PostService {
     @Transactional
     // 댓글 지우는 기능 나중에 추가해야함
     public void delete(Long postId, String userName) {
-        User user = userRepository.findByLoginID(userName).orElseThrow();
+        User user = userRepository.findByLoginId(userName).orElseThrow();
 
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저 게시글" + postId));
