@@ -52,4 +52,16 @@ public class Post extends BaseEntity {
     public User getUser() {
         return user;
     }
+
+    public void setPost(String content, List<String> imageUrl) {
+        if (content == null && imageUrl == null) {
+            throw new IllegalStateException("수정할 내용이 없습니다.");
+        }
+        if (content != null) {
+            this.content = content;
+        }
+        if (imageUrl != null) {
+            this.imageUrl = imageUrl;
+        }
+    }
 }
