@@ -11,13 +11,13 @@ public class Comment {
     Long id;
 
     @Column(nullable = false)
-    String content;
+    private String content;
 
     @ManyToOne
-    User user;
+    private User user;
 
     @ManyToOne
-    Post post;
+    private Post post;
 
     public Comment(String content, User user, Post post) {
         this.content = content;
