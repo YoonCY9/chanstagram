@@ -1,9 +1,11 @@
 package CTHH.chanstagram.post;
 
 import CTHH.chanstagram.User.DTO.LoginRequest;
+import CTHH.chanstagram.User.DTO.LoginResponse;
 import CTHH.chanstagram.User.DTO.UserDetailRequest;
 import CTHH.chanstagram.User.Gender;
 import CTHH.chanstagram.post.DTO.CreatePost;
+import CTHH.chanstagram.post.DTO.PostResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,14 +41,31 @@ public class postTest {
                 .then().log().all()
                 .statusCode(200);
 
-        RestAssured
+        LoginResponse token = RestAssured
                 .given().log().all()
                 .contentType(ContentType.JSON)
                 .body(new LoginRequest("younId", "11111"))
                 .when()
                 .post("/login")
                 .then().log().all()
-                .statusCode(200);
+                .statusCode(200)
+                .extract()
+                .as(LoginResponse.class);
+
+        List<String> imageUrl = List.of("https://example.com/image1.jpg111",
+                "https://example.com/image2.jpg");
+
+        PostResponse postResponse = RestAssured
+                .given()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.token())
+                .body(new CreatePost(imageUrl, "테스트입니다"))
+                .when()
+                .post("/posts")
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(PostResponse.class);
 
 
 

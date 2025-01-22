@@ -5,6 +5,7 @@ import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
 import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.post.DTO.CreatePost;
+import CTHH.chanstagram.post.DTO.PostResponse;
 import CTHH.chanstagram.post.DTO.PostsByNickName;
 import CTHH.chanstagram.post.DTO.UpdatePost;
 import jakarta.transaction.Transactional;
@@ -27,12 +28,20 @@ public class PostService {
     }
 
     @Transactional
-    public void create(CreatePost dto, String userName) {
+    public PostResponse create(CreatePost dto, String userName) {
         User user = userRepository.findByLoginId(userName).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저" + userName));
 
         Post post = new Post(dto.content(), dto.imageUrl(), user);
         postRepository.save(post);
+        return new PostResponse(
+                post.getId(),
+                post.getContent(),
+                post.getCommentCount(),
+                post.getImageUrl(),
+                post.getUser(),
+                post.getCreatedTime(),
+                post.getUpdatedTime());
     }
 
     public List<PostsByNickName> findByNickName(String nickName) {
