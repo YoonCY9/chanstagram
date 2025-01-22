@@ -47,7 +47,7 @@ public class PostService {
                 post.getUpdatedTime());
     }
 
-    public List<PostsByNickName> findByNickName(String nickName) {
+    public List<PostsByNickName> findByNickName(String nickName) { // 닉네임으로 게시글조회
         List<Post> posts = postRepository.findByUser_NickName(nickName);
         return posts.stream()
                 .map(p -> new PostsByNickName(
@@ -59,6 +59,36 @@ public class PostService {
                         p.getCreatedTime(),
                         p.getUpdatedTime()
                 )).toList();
+    }
+
+    public List<PostResponse> findAll() { // 게시글 전체조회
+        List<Post> posts = postRepository.findAll();
+
+        return posts.stream()
+                .map(p -> new PostResponse(
+                p.getId(),
+                p.getContent(),
+                p.getCommentCount(),
+                p.getImageUrl(),
+                p.getUser(),
+                p.getCreatedTime(),
+                p.getUpdatedTime()
+        )).toList();
+    }
+
+    public PostResponse findByPostId(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new NoSuchElementException("존재하지 않는 postId" + postId));
+
+        return new PostResponse(
+                post.getId(),
+                post.getContent(),
+                post.getCommentCount(),
+                post.getImageUrl(),
+                post.getUser(),
+                post.getCreatedTime(),
+                post.getUpdatedTime()
+        );
     }
 
     @Transactional

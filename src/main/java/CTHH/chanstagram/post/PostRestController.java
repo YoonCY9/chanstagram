@@ -28,9 +28,19 @@ public class PostRestController {
         return postService.create(post, userId);
     }
 
-    @GetMapping("/posts/{nickName}")
+    @GetMapping("/posts/{nickName}") // 닉네임으로 게시글 조회
     public List<PostsByNickName> findByNickName(@PathVariable String nickName) {
         return postService.findByNickName(nickName);
+    }
+
+    @GetMapping("/posts") // 모든 게시글 조회
+    public List<PostResponse> findAll() {
+        return postService.findAll();
+    }
+
+    @GetMapping("/posts/{postId}")
+    public PostResponse findByPostId(@PathVariable Long postId) {
+        return postService.findByPostId(postId);
     }
 
     @PutMapping("/posts/{postId}")
