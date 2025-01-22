@@ -1,18 +1,11 @@
 package CTHH.chanstagram.post;
 
 import CTHH.chanstagram.Comment.CommentRepository;
-import CTHH.chanstagram.User.JwtProvider;
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
-import CTHH.chanstagram.User.UserService;
-import CTHH.chanstagram.post.DTO.CreatePost;
-import CTHH.chanstagram.post.DTO.PostResponse;
-import CTHH.chanstagram.post.DTO.PostsByNickName;
-import CTHH.chanstagram.post.DTO.UpdatePost;
+import CTHH.chanstagram.post.DTO.*;
 import jakarta.transaction.Transactional;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -23,11 +16,13 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final LikeRepository likeRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
+        this.likeRepository = likeRepository;
     }
 
     @Transactional
@@ -66,14 +61,14 @@ public class PostService {
 
         return posts.stream()
                 .map(p -> new PostResponse(
-                p.getId(),
-                p.getContent(),
-                p.getCommentCount(),
-                p.getImageUrl(),
-                p.getUser(),
-                p.getCreatedTime(),
-                p.getUpdatedTime()
-        )).toList();
+                        p.getId(),
+                        p.getContent(),
+                        p.getCommentCount(),
+                        p.getImageUrl(),
+                        p.getUser(),
+                        p.getCreatedTime(),
+                        p.getUpdatedTime()
+                )).toList();
     }
 
     public PostResponse findByPostId(Long postId) {

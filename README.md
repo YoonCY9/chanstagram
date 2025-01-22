@@ -143,3 +143,18 @@ Response Dto 필드
 
 @PAthVariable 에서 받는 값
 - Long commentId
+
+
+Post like(post_user) User
+## 추가 기능 
+- ### 좋아요  Like
+
+- Long id,
+- Long userId
+- Long postId
+- 
+- 
+- ### 팔로우
+
+- ### 해시태그
+- ### 사람태그
