@@ -2,6 +2,7 @@ package CTHH.chanstagram.post;
 
 import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.post.DTO.CreatePost;
+import CTHH.chanstagram.post.DTO.PostResponse;
 import CTHH.chanstagram.post.DTO.PostsByNickName;
 import CTHH.chanstagram.post.DTO.UpdatePost;
 import org.springframework.http.HttpHeaders;
@@ -21,10 +22,10 @@ public class PostRestController {
     }
 
     @PostMapping("/posts")
-    public void create(@RequestBody CreatePost post,
-                       @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+    public PostResponse create(@RequestBody CreatePost post,
+                               @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         String userId = userService.getProfile(authorization);
-        postService.create(post, userId);
+        return postService.create(post, userId);
     }
 
     @GetMapping("/posts/{nickName}")

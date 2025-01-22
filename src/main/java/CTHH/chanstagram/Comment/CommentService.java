@@ -28,7 +28,7 @@ public class CommentService {
                 .orElseThrow(() -> new NoSuchElementException("postId를 찾을 수 없습니다.:" + request.postId()));
         User user = userRepository.findByLoginId(userId)
                 .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
-        ;
+
         commentRepository.save(new Comment(request.content(),user,post));
     }
     @Transactional
