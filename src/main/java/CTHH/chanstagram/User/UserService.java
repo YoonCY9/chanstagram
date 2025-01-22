@@ -2,10 +2,7 @@ package CTHH.chanstagram.User;
 
 import CTHH.chanstagram.Comment.CommentRepository;
 import CTHH.chanstagram.SecurityUtils;
-import CTHH.chanstagram.User.DTO.LoginRequest;
-import CTHH.chanstagram.User.DTO.UserDetailResponse;
-import CTHH.chanstagram.User.DTO.UserDetailRequest;
-import CTHH.chanstagram.User.DTO.UserRequest;
+import CTHH.chanstagram.User.DTO.*;
 import CTHH.chanstagram.post.PostRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -53,11 +50,11 @@ public class UserService {
     }
 
     //로그인
-    public String login(LoginRequest loginRequest) {
+    public LoginResponse login(LoginRequest loginRequest) {
         User findUser = userRepository.findById(loginRequest.loginId()).orElseThrow(
                 () -> new NoSuchElementException("ID 혹은 비밀번호가 틀립니다."));
         findUser.findByPassword(loginRequest.password());
-        return jwtProvider.createToken(loginRequest.loginId());
+        return new LoginResponse(jwtProvider.createToken(loginRequest.loginId()));
     }
 
     // 가입한 회원이 자신의 가입 정보를 조회하는 API

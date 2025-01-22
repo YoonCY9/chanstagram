@@ -1,9 +1,6 @@
 package CTHH.chanstagram.User;
 
-import CTHH.chanstagram.User.DTO.LoginRequest;
-import CTHH.chanstagram.User.DTO.UserDetailResponse;
-import CTHH.chanstagram.User.DTO.UserDetailRequest;
-import CTHH.chanstagram.User.DTO.UserRequest;
+import CTHH.chanstagram.User.DTO.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +22,7 @@ public class UserRestController {
 
     //로그인
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequest loginRequest) {
+    public LoginResponse login(@RequestBody LoginRequest loginRequest) {
         return userService.login(loginRequest);
     }
 
