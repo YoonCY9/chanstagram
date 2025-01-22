@@ -1,8 +1,13 @@
 package CTHH.chanstagram.post;
 
+import CTHH.chanstagram.Comment.Comment;
+import CTHH.chanstagram.Comment.CommentDetailedResponse;
 import CTHH.chanstagram.Comment.CommentRepository;
+import CTHH.chanstagram.User.DTO.UserResponse;
+import CTHH.chanstagram.User.JwtProvider;
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
+import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.post.DTO.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -37,7 +42,7 @@ public class PostService {
                 post.getContent(),
                 post.getCommentCount(),
                 post.getImageUrl(),
-                post.getUser(),
+                new UserResponse(user.getNickName(), user.getProfileImage()),
                 post.getCreatedTime(),
                 post.getUpdatedTime());
     }
@@ -50,7 +55,7 @@ public class PostService {
                         p.getContent(),
                         p.getCommentCount(),
                         p.getImageUrl(),
-                        p.getUser(),
+                        new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
                         p.getCreatedTime(),
                         p.getUpdatedTime()
                 )).toList();
@@ -65,24 +70,37 @@ public class PostService {
                         p.getContent(),
                         p.getCommentCount(),
                         p.getImageUrl(),
-                        p.getUser(),
+                        new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
                         p.getCreatedTime(),
                         p.getUpdatedTime()
                 )).toList();
     }
 
-    public PostResponse findByPostId(Long postId) {
+    public PostDetailedResponse findByPostId(Long postId) {
+        List<Comment> comments = commentRepository.findByPostId(postId);
+        List<CommentDetailedResponse> commentDetailedResponses =
+                comments.stream()
+                        .map(c -> new CommentDetailedResponse(
+                                c.getId(),
+                                c.getContent(),
+                                c.getUser().getNickName()
+                                )).toList();
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 postId" + postId));
 
-        return new PostResponse(
+        User user = postRepository.findUserByPostId(postId);
+
+        UserResponse userResponse = new UserResponse(user.getNickName(), user.getProfileImage());
+
+        return new PostDetailedResponse(
                 post.getId(),
                 post.getContent(),
                 post.getCommentCount(),
                 post.getImageUrl(),
-                post.getUser(),
+                userResponse,
                 post.getCreatedTime(),
-                post.getUpdatedTime()
+                post.getUpdatedTime(),
+                commentDetailedResponses
         );
     }
 
