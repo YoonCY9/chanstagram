@@ -26,14 +26,14 @@ public class CommentService {
     public void create(CreateCommentRequest request,String userId) {
         Post post = postRepository.findById(request.postId())
                 .orElseThrow(() -> new NoSuchElementException("postId를 찾을 수 없습니다.:" + request.postId()));
-        User user = userRepository.findByLoginID(userId)
+        User user = userRepository.findByLoginId(userId)
                 .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
         ;
         commentRepository.save(new Comment(request.content(),user,post));
     }
     @Transactional
     public void update(Long commentId, UpdateCommentRequest request, String userId) {
-        User user = userRepository.findByLoginID(userId)
+        User user = userRepository.findByLoginId(userId)
                 .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NoSuchElementException("commentId를 찾을 수 없습니다.:" + commentId));
@@ -43,7 +43,7 @@ public class CommentService {
     }
     @Transactional
     public void deleteById(Long commentId, String userId) {
-        User user = userRepository.findByLoginID(userId)
+        User user = userRepository.findByLoginId(userId)
                 .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NoSuchElementException("commentId를 찾을 수 없습니다.:" + commentId));
