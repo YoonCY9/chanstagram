@@ -6,6 +6,7 @@ import CTHH.chanstagram.User.DTO.LoginRequest;
 import CTHH.chanstagram.User.DTO.UserDetailResponse;
 import CTHH.chanstagram.User.DTO.UserDetailRequest;
 import CTHH.chanstagram.User.DTO.UserRequest;
+import CTHH.chanstagram.post.PostRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

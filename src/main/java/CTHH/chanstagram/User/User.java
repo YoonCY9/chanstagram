@@ -42,7 +42,8 @@ public class User extends BaseEntity {
     protected User() {
     }
 
-    public User(String userName, String nickName, String loginId, String password, Gender gender, LocalDate birth, String content, String profileImage, String phoneNumber) {
+    public User(String userName, String nickName, String loginId, String password, Gender gender,
+                LocalDate birth, String content, String profileImage, String phoneNumber) {
         this.userName = userName;
         this.nickName = nickName;
         this.loginId = loginId;
