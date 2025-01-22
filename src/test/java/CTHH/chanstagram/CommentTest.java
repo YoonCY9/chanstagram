@@ -10,12 +10,14 @@ import CTHH.chanstagram.User.DTO.UserRequest;
 import CTHH.chanstagram.User.Gender;
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.post.DTO.CreatePost;
+import CTHH.chanstagram.post.DTO.PostResponse;
 import CTHH.chanstagram.post.Post;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
@@ -24,14 +26,17 @@ import java.time.LocalDate;
 import java.util.List;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CommentTest extends UserTest {
+public class CommentTest {
 
     @LocalServerPort
     int port;
+    @Autowired
+    DatabaseCleanup databaseCleanup;
 
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        databaseCleanup.execute();
     }
 
     @DisplayName("댓글 생성")
@@ -59,23 +64,25 @@ public class CommentTest extends UserTest {
                 .extract()
                 .as(LoginResponse.class);
         //게시글 생성
-        RestAssured
-                .given().log().all()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
+        List<String> imageUrl = List.of("https://example.com/image1.jpg111",
+                "https://example.com/image2.jpg");
+        PostResponse postResponse = RestAssured
+                .given()
                 .contentType(ContentType.JSON)
-                .body(new CreatePost(List.of(),""))
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
+                .body(new CreatePost(imageUrl, "테스트입니다"))
                 .when()
                 .post("/posts")
-                .then().log().all()
+                .then()
                 .statusCode(200)
                 .extract()
-                .as();
+                .as(PostResponse.class);
         //댓글생성
         RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
                 .contentType(ContentType.JSON)
-                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.",postId))
+                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.",postResponse.postId()))
                 .when()
                 .post("/comments")
                 .then().log().all()
@@ -106,13 +113,25 @@ public class CommentTest extends UserTest {
                 .extract()
                 .as(LoginResponse.class);
         //게시글 생성
-
+        List<String> imageUrl = List.of("https://example.com/image1.jpg111",
+                "https://example.com/image2.jpg");
+        PostResponse postResponse = RestAssured
+                .given()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
+                .body(new CreatePost(imageUrl, "테스트입니다"))
+                .when()
+                .post("/posts")
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(PostResponse.class);
         //댓글 생성
         RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
                 .contentType(ContentType.JSON)
-                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.",postId))
+                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.",postResponse.postId()))
                 .when()
                 .post("/comments")
                 .then().log().all()
@@ -121,7 +140,7 @@ public class CommentTest extends UserTest {
         RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
-                .pathParam("commentId", "1")
+                .pathParam("commentId", 1)
                 .contentType(ContentType.JSON)
                 .body(new UpdateCommentRequest("댓글 수정 테스트 중입니다."))
                 .when()
@@ -154,14 +173,34 @@ public class CommentTest extends UserTest {
                 .extract()
                 .as(LoginResponse.class);
         //게시글 생성
-
+        List<String> imageUrl = List.of("https://example.com/image1.jpg111",
+                "https://example.com/image2.jpg");
+        PostResponse postResponse = RestAssured
+                .given()
+                .contentType(ContentType.JSON)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
+                .body(new CreatePost(imageUrl, "테스트입니다"))
+                .when()
+                .post("/posts")
+                .then()
+                .statusCode(200)
+                .extract()
+                .as(PostResponse.class);
         //댓글 생성
-
+        RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
+                .contentType(ContentType.JSON)
+                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.",postResponse.postId()))
+                .when()
+                .post("/comments")
+                .then().log().all()
+                .statusCode(200);
         //댓글 삭제
         RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
-                .pathParam("commentId", "1")
+                .pathParam("commentId", 1)
                 .when()
                 .delete("/comments/{commentId}")
                 .then().log().all()
