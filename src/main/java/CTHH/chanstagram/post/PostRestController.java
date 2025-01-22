@@ -1,10 +1,7 @@
 package CTHH.chanstagram.post;
 
 import CTHH.chanstagram.User.UserService;
-import CTHH.chanstagram.post.DTO.CreatePost;
-import CTHH.chanstagram.post.DTO.PostResponse;
-import CTHH.chanstagram.post.DTO.PostsByNickName;
-import CTHH.chanstagram.post.DTO.UpdatePost;
+import CTHH.chanstagram.post.DTO.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +35,8 @@ public class PostRestController {
         return postService.findAll();
     }
 
-    @GetMapping("/posts/{postId}")
-    public PostResponse findByPostId(@PathVariable Long postId) {
+    @GetMapping("/posts/detailed/{postId}")
+    public PostDetailedResponse findByPostId(@PathVariable Long postId) {
         return postService.findByPostId(postId);
     }
 
