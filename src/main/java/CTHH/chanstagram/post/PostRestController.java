@@ -38,6 +38,11 @@ public class PostRestController {
         return postService.findAll();
     }
 
+    @GetMapping("/posts/{postId}")
+    public PostResponse findByPostId(@PathVariable Long postId) {
+        return postService.findByPostId(postId);
+    }
+
     @PutMapping("/posts/{postId}")
     public void update(@PathVariable Long postId,
                        @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
