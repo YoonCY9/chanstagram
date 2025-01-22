@@ -60,6 +60,21 @@ public class PostService {
                         p.getUpdatedTime()
                 )).toList();
     }
+    public List<PostResponse> findAll() { // 게시글 전체조회
+        List<Post> posts = postRepository.findAll();
+
+        return posts.stream()
+                .map(p -> new PostResponse(
+                p.getId(),
+                p.getContent(),
+                p.getCommentCount(),
+                p.getImageUrl(),
+                p.getUser(),
+                p.getCreatedTime(),
+                p.getUpdatedTime()
+        )).toList();
+    }
+
 
     @Transactional
     public void update(Long postId, UpdatePost dto, String userName) {
