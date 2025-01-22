@@ -30,6 +30,7 @@ public class CommentTest {
 
     @LocalServerPort
     int port;
+
     @Autowired
     DatabaseCleanup databaseCleanup;
 
