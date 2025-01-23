@@ -7,8 +7,10 @@ import CTHH.chanstagram.User.DTO.UserResponse;
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
 import CTHH.chanstagram.User.UserService;
+import CTHH.chanstagram.hashTag.HashTagResponse;
 import CTHH.chanstagram.hashTag.HashTagService;
 import CTHH.chanstagram.post.DTO.*;
+import CTHH.chanstagram.post.post_hashtag.Post_HashTagService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +25,15 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final HashTagService hashTagService;
+    private final Post_HashTagService postHashTagService;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, LikeRepository likeRepository, HashTagService hashTagService) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, LikeRepository likeRepository, HashTagService hashTagService, Post_HashTagService postHashTagService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.likeRepository = likeRepository;
         this.hashTagService = hashTagService;
+        this.postHashTagService = postHashTagService;
     }
 
     @Transactional
@@ -39,13 +43,24 @@ public class PostService {
 
         Post post = new Post(dto.content(), dto.imageUrl(), user);
 
+        postRepository.save(post);
+
+         /*
+         #으로 헤시테그를 나누고 해당 헤시테그가 없다면 해시테그 생성 & postHashTag 생성
+         있다면 해시테그 이름으로 해시테그 ID 찾고 중간 postHashTag 생성
+         */
+
         for (int i = 0; i < dto.content().length(); i++) {
             if (dto.content().charAt(i) == '#' && dto.content().charAt(i + 1) != ' ') {
-                hashTagService.create(dto.content().substring(i + 1, dto.content().indexOf(" ", i)));
+                if (hashTagService.findIdByName(dto.content().substring(i + 1, dto.content().indexOf(" ", i))) == null) {
+                    HashTagResponse createdHashTag = hashTagService.create(dto.content().substring(i + 1, dto.content().indexOf(" ", i)));
+                    postHashTagService.create(post.getId(), createdHashTag.id());
+                }
+            } else {
+                Long hashTagId = hashTagService.findIdByName(dto.content().substring(i + 1, dto.content().indexOf(" ", i)));
+                postHashTagService.create(post.getId(), hashTagId);
             }
         }
-
-        postRepository.save(post);
         return new PostResponse(
                 post.getId(),
                 post.getContent(),
@@ -141,23 +156,22 @@ public class PostService {
             postRepository.delete(post);
         }
     }
+
     @Transactional
-    public void like(Long postId,String loginId){
+    public void like(Long postId, String loginId) {
         User user = userRepository.findByLoginId(loginId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저" + loginId));
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저 게시글" + postId));
 
         Like like = likeRepository.findByUser_LoginIdAndPost_Id(loginId, postId);
-        if(like==null){
-            likeRepository.save(new Like(user,post));
+        if (like == null) {
+            likeRepository.save(new Like(user, post));
             post.upLikeCount();
-        }else{
+        } else {
             likeRepository.delete(like);
             post.downLikeCount();
         }
-
-
 
 
     }
