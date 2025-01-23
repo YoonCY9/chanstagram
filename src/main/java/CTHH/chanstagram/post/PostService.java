@@ -6,11 +6,10 @@ import CTHH.chanstagram.Comment.CommentRepository;
 import CTHH.chanstagram.User.DTO.UserResponse;
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
-import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.hashTag.HashTagResponse;
 import CTHH.chanstagram.hashTag.HashTagService;
 import CTHH.chanstagram.post.DTO.*;
-import CTHH.chanstagram.post.post_hashtag.Post_HashTagService;
+import CTHH.chanstagram.post.postHashtag.PostHashTagService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -25,9 +24,9 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final HashTagService hashTagService;
-    private final Post_HashTagService postHashTagService;
+    private final PostHashTagService postHashTagService;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, LikeRepository likeRepository, HashTagService hashTagService, Post_HashTagService postHashTagService) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, LikeRepository likeRepository, HashTagService hashTagService, PostHashTagService postHashTagService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
