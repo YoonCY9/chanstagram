@@ -54,4 +54,12 @@ public class PostRestController {
         String userId = userService.getProfile(authorization);
         postService.delete(postId, userId);
     }
+    @PostMapping("/posts/{postId}")
+    public void like(@PathVariable Long postId,
+                     @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+        String userId = userService.getProfile(authorization);
+        postService.like(postId,userId);
+
+    }
+
 }

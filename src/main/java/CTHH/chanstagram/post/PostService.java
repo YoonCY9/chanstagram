@@ -4,10 +4,8 @@ import CTHH.chanstagram.Comment.Comment;
 import CTHH.chanstagram.Comment.CommentDetailedResponse;
 import CTHH.chanstagram.Comment.CommentRepository;
 import CTHH.chanstagram.User.DTO.UserResponse;
-import CTHH.chanstagram.User.JwtProvider;
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
-import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.post.DTO.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -44,7 +42,8 @@ public class PostService {
                 post.getImageUrl(),
                 new UserResponse(user.getNickName(), user.getProfileImage()),
                 post.getCreatedTime(),
-                post.getUpdatedTime());
+                post.getUpdatedTime(),
+                post.getLikeCount());
     }
 
     public List<PostsByNickName> findByNickName(String nickName) { // 닉네임으로 게시글조회
@@ -72,7 +71,8 @@ public class PostService {
                         p.getImageUrl(),
                         new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
                         p.getCreatedTime(),
-                        p.getUpdatedTime()
+                        p.getUpdatedTime(),
+                        p.getLikeCount()
                 )).toList();
     }
 
@@ -100,7 +100,8 @@ public class PostService {
                 userResponse,
                 post.getCreatedTime(),
                 post.getUpdatedTime(),
-                commentDetailedResponses
+                commentDetailedResponses,
+                post.getLikeCount()
         );
     }
 
@@ -128,5 +129,25 @@ public class PostService {
             commentRepository.deleteAllByPostId(postId);
             postRepository.delete(post);
         }
+    }
+    @Transactional
+    public void like(Long postId,String loginId){
+        User user = userRepository.findByLoginId(loginId).orElseThrow(() ->
+                new NoSuchElementException("존재하지 않는 유저" + loginId));
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new NoSuchElementException("존재하지 않는 유저 게시글" + postId));
+
+        Like like = likeRepository.findByUser_LoginIdAndPost_Id(loginId, postId);
+        if(like==null){
+            likeRepository.save(new Like(user,post));
+            post.upLikeCount();
+        }else{
+            likeRepository.delete(like);
+            post.downLikeCount();
+        }
+
+
+
+
     }
 }
