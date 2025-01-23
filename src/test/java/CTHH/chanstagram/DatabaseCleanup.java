@@ -27,8 +27,8 @@ public class DatabaseCleanup implements InitializingBean {
         entityManager.flush();
         entityManager.createNativeQuery("SET REFERENTIAL_INTEGRITY FALSE").executeUpdate();
         for (String tableName : tableNames) {
-            if (tableName.equals("user")) {
-                entityManager.createNativeQuery("TRUNCATE TABLE " + "users").executeUpdate();
+            if (tableName.equals("user") || tableName.equals("like")) {
+                entityManager.createNativeQuery("TRUNCATE TABLE " + tableName + "s").executeUpdate();
             } else {
                 entityManager.createNativeQuery("TRUNCATE TABLE " + tableName).executeUpdate();
                 entityManager.createNativeQuery("ALTER TABLE " + tableName + " ALTER COLUMN ID RESTART WITH 1").executeUpdate();

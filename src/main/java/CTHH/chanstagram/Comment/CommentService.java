@@ -21,17 +21,19 @@ public class CommentService {
         this.userRepository = userRepository;
     }
 
-    public void create(CreateCommentRequest request,String userId) {
+    public CommentResponse create(CreateCommentRequest request,String userId) {
         Post post = postRepository.findById(request.postId())
                 .orElseThrow(() -> new NoSuchElementException("postId를 찾을 수 없습니다.:" + request.postId()));
         User user = userRepository.findByLoginId(userId)
                 .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
-
-        commentRepository.save(new Comment(request.content(),user,post));
+        Comment comment = new Comment(request.content(), user, post);
+        commentRepository.save(comment);
         post.increaseCommentCount();
+        return new CommentResponse(comment.id,comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
+
     }
     @Transactional
-    public void update(Long commentId, UpdateCommentRequest request, String userId) {
+    public CommentResponse update(Long commentId, UpdateCommentRequest request, String userId) {
         User user = userRepository.findByLoginId(userId)
                 .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
         Comment comment = commentRepository.findById(commentId)
@@ -39,6 +41,8 @@ public class CommentService {
         if (comment.getUser().equals(user)) {
             comment.updateContent(request.content());
         } else throw new RuntimeException("작성자가 일치하지 않습니다.");
+
+        return new CommentResponse(comment.id,comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
     }
     @Transactional
     public void deleteById(Long commentId, String userId) {

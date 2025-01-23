@@ -1,17 +1,14 @@
 package CTHH.chanstagram;
 
-import CTHH.chanstagram.Comment.Comment;
+import CTHH.chanstagram.Comment.CommentResponse;
 import CTHH.chanstagram.Comment.CreateCommentRequest;
 import CTHH.chanstagram.Comment.UpdateCommentRequest;
 import CTHH.chanstagram.User.DTO.LoginRequest;
 import CTHH.chanstagram.User.DTO.LoginResponse;
 import CTHH.chanstagram.User.DTO.UserDetailRequest;
-import CTHH.chanstagram.User.DTO.UserRequest;
 import CTHH.chanstagram.User.Gender;
-import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.post.DTO.CreatePost;
 import CTHH.chanstagram.post.DTO.PostResponse;
-import CTHH.chanstagram.post.Post;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +21,9 @@ import org.springframework.http.HttpHeaders;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CommentTest {
@@ -79,15 +79,20 @@ public class CommentTest {
                 .extract()
                 .as(PostResponse.class);
         //댓글생성
-        RestAssured
+        CommentResponse commentResponse = RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
                 .contentType(ContentType.JSON)
-                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.",postResponse.postId()))
+                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.", postResponse.postId()))
                 .when()
                 .post("/comments")
                 .then().log().all()
-                .statusCode(200);
+                .statusCode(200)
+                .extract()
+                .as(CommentResponse.class);
+
+        assertThat(commentResponse.id()).isEqualTo(1);
+        assertThat(commentResponse.content()).isEqualTo("댓글 생성 테스트 중입니다.");
     }
     @DisplayName("댓글 수정")
     @Test
@@ -138,7 +143,7 @@ public class CommentTest {
                 .then().log().all()
                 .statusCode(200);
         //댓글 수정
-        RestAssured
+        CommentResponse commentResponse = RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
                 .pathParam("commentId", 1)
@@ -147,7 +152,10 @@ public class CommentTest {
                 .when()
                 .put("/comments/{commentId}")
                 .then().log().all()
-                .statusCode(200);
+                .statusCode(200)
+                .extract()
+                .as(CommentResponse.class);
+        assertThat(commentResponse.content()).isEqualTo("댓글 수정 테스트 중입니다.");
     }
     @DisplayName("댓글 삭제")
     @Test
@@ -192,7 +200,7 @@ public class CommentTest {
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
                 .contentType(ContentType.JSON)
-                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.",postResponse.postId()))
+                .body(new CreateCommentRequest("댓글 삭제 테스트 중입니다.",postResponse.postId()))
                 .when()
                 .post("/comments")
                 .then().log().all()
