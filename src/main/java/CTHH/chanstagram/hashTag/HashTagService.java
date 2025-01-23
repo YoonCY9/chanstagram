@@ -18,8 +18,8 @@ public class HashTagService {
         hashTagRepository.save(new HashTag(name));
     }
 
-    public boolean existsHashTag(String name) {
-        hashTagRepository.findIdByName(name).orElse(null);
-        return true;
+    public Long findIdByName(String name) {
+        Long hashTagId = hashTagRepository.findIdByName(name).orElse(null);
+        return hashTagId;
     }
 }
