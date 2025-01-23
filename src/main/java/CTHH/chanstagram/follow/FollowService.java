@@ -4,6 +4,7 @@ import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
 import CTHH.chanstagram.follow.followDTO.CreateFollow;
 import CTHH.chanstagram.follow.followDTO.FollowResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
@@ -19,7 +20,7 @@ public class FollowService {
         this.userRepository = userRepository;
     }
 
-    public void create(String followerName, String followeeName) {
+    public void follow(String followerName, String followeeName) {
         User follower = userRepository.findByLoginId(followerName).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저" + followerName));
 
@@ -29,11 +30,16 @@ public class FollowService {
             throw new IllegalArgumentException("자기 자신은 팔로우 할 수 없습니다");
         }
 
+
         if (followRepository.existsByFollowerAndFollowee(follower, followee)) {
-            throw new IllegalArgumentException("이미 팔로우 한 유저 입니다.");
+            Follow follow = followRepository
+                    .findByFollower_NickNameAndFollowee_NickName(follower.getNickName(), followee.getNickName()).orElseThrow();
+            followRepository.deleteById(follow.getId());
         } else {
             Follow follow = new Follow(follower, followee);
             followRepository.save(follow);
         }
     }
+
+
 }

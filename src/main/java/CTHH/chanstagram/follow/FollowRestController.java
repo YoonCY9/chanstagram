@@ -21,9 +21,11 @@ public class FollowRestController {
     }
 
     @PostMapping("/follows/{nickName}")
-    public void create(@PathVariable String nickName,
+    public void follow(@PathVariable String nickName,
                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         String userId = userService.getProfile(authorization);
-        followService.create(userId, nickName);
+        followService.follow(userId, nickName);
     }
+
+    // get 요청으로 줘야할것 id, 프로필이미지, nickname , username
 }
