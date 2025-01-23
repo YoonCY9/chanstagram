@@ -26,4 +26,6 @@ public class FollowRestController {
         String userId = userService.getProfile(authorization);
         followService.follow(userId, nickName);
     }
+
+    // get 요청으로 줘야할것 id, 프로필이미지, nickname , username
 }
