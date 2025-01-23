@@ -52,6 +52,7 @@ public class PostService {
          있다면 해시테그 이름으로 해시테그 ID 찾고 중간 postHashTag 생성
          */
 
+
 //        for (int i = 0; i < dto.content().length(); i++) {
 //            if (dto.content().charAt(i) == '#' && dto.content().charAt(i + 1) != ' ') {
 //                if (hashTagService.findIdByName(dto.content().substring(i + 1, dto.content().indexOf(" ", i))) == null) {
@@ -63,6 +64,36 @@ public class PostService {
 //                postHashTagService.create(post.getId(), hashTagId);
 //            }
 //        }
+
+        for (int i = 0; i < dto.content().length(); i++) {
+            if (dto.content().charAt(i) == '#') {
+                // 해시태그의 끝 위치 계산
+                int endIndex = dto.content().indexOf(" ", i);
+                if (endIndex == -1) {
+                    endIndex = dto.content().length();
+                }
+
+                // 해시태그 추출
+                String hashTagName = dto.content().substring(i + 1, endIndex).trim();
+
+                // 빈 해시태그는 건너뜀
+                if (hashTagName.isEmpty()) {
+                    continue;
+                }
+
+                // 해시태그 ID 조회 및 생성
+                Long hashTagId = hashTagService.findIdByName(hashTagName);
+                if (hashTagId == null) {
+                    HashTagResponse createdHashTag = hashTagService.create(hashTagName);
+                    hashTagId = createdHashTag.id();
+                }
+
+                // Post-HashTag 관계 생성
+                postHashTagService.create(post.getId(), hashTagId);
+            }
+        }
+
+
         return new PostResponse(
                 post.getId(),
                 post.getContent(),
