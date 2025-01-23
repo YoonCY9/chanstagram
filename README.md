@@ -163,7 +163,7 @@ Post like(post_user) User
 ### 상대를 팔로우 하기 (Post) ("/follows") @PathVariable
 (토큰값을 받아서 본인 loginId 값 추출)
 - String followeeNickName (팔로우할 사람의 닉네임)
-
+- 이미 팔로우한 사람을 팔로우 요청을 다시 보내면 팔로우 취소 (follow id 삭제)
 ### 해시태그
 - #### Entity 필드
 - Long id
