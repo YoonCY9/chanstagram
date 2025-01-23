@@ -13,12 +13,8 @@ public class HashTag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Post post;
-
-    public HashTag(String content, Post post) {
+    public HashTag(String content) {
         this.content = content;
-        this.post = post;
     }
 
     public String getContent() {
@@ -29,7 +25,4 @@ public class HashTag {
         return id;
     }
 
-    public Post getPost() {
-        return post;
-    }
 }
