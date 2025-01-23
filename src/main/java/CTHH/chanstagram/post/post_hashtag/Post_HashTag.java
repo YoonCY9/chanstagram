@@ -1,9 +1,8 @@
-package CTHH.chanstagram.post;
+package CTHH.chanstagram.post.post_hashtag;
 
 import CTHH.chanstagram.hashTag.HashTag;
+import CTHH.chanstagram.post.Post;
 import jakarta.persistence.*;
-
-import java.util.IdentityHashMap;
 
 @Entity
 public class Post_HashTag {
@@ -17,6 +16,10 @@ public class Post_HashTag {
 
     @ManyToOne
     private HashTag hashTag;
+
+    protected Post_HashTag() {
+
+    }
 
     public Post_HashTag(HashTag hashTag, Post post) {
         this.hashTag = hashTag;
