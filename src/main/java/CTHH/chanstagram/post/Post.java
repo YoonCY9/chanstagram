@@ -30,7 +30,7 @@ public class Post extends BaseEntity {
     public Post(String content, List<String> imageUrl, User user) {
         this.content = content;
         this.commentCount = 0;
-        this.likeCount =0l;
+        this.likeCount = 0L;
         this.imageUrl = imageUrl;
         this.user = user;
     }
@@ -78,10 +78,11 @@ public class Post extends BaseEntity {
 
     //좋아요 수 증가
     public void upLikeCount(){
-        this.likeCount=likeCount++;
+        this.likeCount++;
     }
     //좋아요 수 감소
     public void downLikeCount(){
-        this.likeCount=likeCount--;
+        // likeCount -= 1;
+        this.likeCount--;
     }
 }

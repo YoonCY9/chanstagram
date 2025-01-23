@@ -7,7 +7,6 @@ import CTHH.chanstagram.User.DTO.LoginResponse;
 import CTHH.chanstagram.User.DTO.UserDetailRequest;
 import CTHH.chanstagram.User.Gender;
 import CTHH.chanstagram.post.DTO.CreatePost;
-import CTHH.chanstagram.post.DTO.PostDetailedResponse;
 import CTHH.chanstagram.post.DTO.PostResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -20,6 +19,8 @@ import org.springframework.http.HttpHeaders;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class postTest {
@@ -63,7 +64,8 @@ public class postTest {
         List<String> imageUrl = List.of("https://example.com/image1.jpg111",
                 "https://example.com/image2.jpg");
 
-        PostResponse postResponse = RestAssured
+       PostResponse postResponse =
+                RestAssured
                 .given()
                 .contentType(ContentType.JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.token())
