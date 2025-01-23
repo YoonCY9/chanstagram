@@ -146,15 +146,36 @@ Response Dto 필드
 
 
 Post like(post_user) User
-## 추가 기능 
+## 추가 기능
 - ### 좋아요  Like
-
+- #### Entity 필드
 - Long id,
 - Long userId
 - Long postId
-- 
-- 
-- ### 팔로우
+  -> 좋아요값이 true 이면 like 테이블에 생성, false 이면 삭제(먼저 값 확인 하고 true 이면 삭제,false 이면 그대로)
 
-- ### 해시태그
-- ### 사람태그
+- ### 팔로우 Follow
+- #### Entity 필드
+- Long id
+- User follower(팔로우 하는사람 : 로그인 한 사람)
+- User followee(팔로우를 당하는 사람)
+
+### 상대를 팔로우 하기 (Post) ("/follows") @PathVariable
+(토큰값을 받아서 본인 loginId 값 추출)
+- String followeeNickName (팔로우할 사람의 닉네임)
+
+### 해시태그
+- #### Entity 필드
+- Long id
+- String hashTag
+
+### 해시태그를 생성 (Post) ("/hashtags") @RequestBody
+- String hashTag (해시태그를 할 단어)
+
+### 사람태그
+- #### Entity 필드
+- User user (태그 할 사람)
+- Long id
+
+### 사람태그를 생성 (Post) ("/usertag") @PathVariable
+- String nickName (태그를 할 사람 닉네임)
