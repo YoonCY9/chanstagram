@@ -30,6 +30,7 @@ public class FollowService {
             throw new IllegalArgumentException("자기 자신은 팔로우 할 수 없습니다");
         }
 
+
         if (followRepository.existsByFollowerAndFollowee(follower, followee)) {
             Follow follow = followRepository
                     .findByFollower_NickNameAndFollowee_NickName(follower.getNickName(), followee.getNickName()).orElseThrow();
