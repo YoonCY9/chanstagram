@@ -8,6 +8,7 @@ import CTHH.chanstagram.User.JwtProvider;
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
 import CTHH.chanstagram.User.UserService;
+import CTHH.chanstagram.hashTag.HashTagService;
 import CTHH.chanstagram.post.DTO.*;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -22,12 +23,14 @@ public class PostService {
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
+    private final HashTagService hashTagService;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, LikeRepository likeRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, LikeRepository likeRepository, HashTagService hashTagService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.likeRepository = likeRepository;
+        this.hashTagService = hashTagService;
     }
 
     @Transactional
@@ -36,6 +39,13 @@ public class PostService {
                 new NoSuchElementException("존재하지 않는 유저" + userName));
 
         Post post = new Post(dto.content(), dto.imageUrl(), user);
+
+        for (int i = 0; i < dto.content().length(); i++) {
+            if (dto.content().charAt(i) == '#' && dto.content().charAt(i + 1) != ' ') {
+                hashTagService.create(dto.content().substring(i + 1, dto.content().indexOf(" ", i)));
+            }
+        }
+
         postRepository.save(post);
         return new PostResponse(
                 post.getId(),
@@ -84,7 +94,7 @@ public class PostService {
                                 c.getId(),
                                 c.getContent(),
                                 c.getUser().getNickName()
-                                )).toList();
+                        )).toList();
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 postId" + postId));
 

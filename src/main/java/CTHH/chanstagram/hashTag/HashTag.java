@@ -1,24 +1,27 @@
 package CTHH.chanstagram.hashTag;
 
-import CTHH.chanstagram.post.Post;
 import jakarta.persistence.*;
 
 @Entity
 public class HashTag {
 
     @Column(unique = true)
-    private String content;
+    private String name;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public HashTag(String content) {
-        this.content = content;
+    protected HashTag() {
+
     }
 
-    public String getContent() {
-        return content;
+    public HashTag(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Long getId() {
