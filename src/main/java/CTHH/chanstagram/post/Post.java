@@ -13,9 +13,11 @@ public class Post extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String content;
 
     private int commentCount;
+    private Long likeCount;
 
     @ElementCollection
     private List<String> imageUrl;
@@ -29,6 +31,7 @@ public class Post extends BaseEntity {
     public Post(String content, List<String> imageUrl, User user) {
         this.content = content;
         this.commentCount = 0;
+        this.likeCount =0l;
         this.imageUrl = imageUrl;
         this.user = user;
     }
@@ -53,6 +56,10 @@ public class Post extends BaseEntity {
         return user;
     }
 
+    public Long getLikeCount() {
+        return likeCount;
+    }
+
     public void setPost(String content, List<String> imageUrl) {
         if (content == null && imageUrl == null) {
             throw new IllegalStateException("수정할 내용이 없습니다.");
@@ -68,5 +75,14 @@ public class Post extends BaseEntity {
     // 댓글수 증가 함수
     public void increaseCommentCount() {
         this.commentCount = commentCount++;
+    }
+
+    //좋아요 수 증가
+    public void upLikeCount(){
+        this.likeCount=likeCount++;
+    }
+    //좋아요 수 감소
+    public void downLikeCount(){
+        this.likeCount=likeCount--;
     }
 }

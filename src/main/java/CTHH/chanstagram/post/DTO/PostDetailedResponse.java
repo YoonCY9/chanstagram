@@ -2,7 +2,6 @@ package CTHH.chanstagram.post.DTO;
 
 import CTHH.chanstagram.Comment.CommentDetailedResponse;
 import CTHH.chanstagram.User.DTO.UserResponse;
-import CTHH.chanstagram.User.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,6 +14,7 @@ public record PostDetailedResponse(
         UserResponse user,
         LocalDateTime createdTime,
         LocalDateTime updatedTime,
-        List<CommentDetailedResponse> comments
+        List<CommentDetailedResponse> comments,
+        Long likeCount
 ) {
 }
