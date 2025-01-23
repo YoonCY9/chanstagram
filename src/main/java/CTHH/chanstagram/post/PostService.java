@@ -26,14 +26,16 @@ public class PostService {
     private final LikeRepository likeRepository;
     private final HashTagService hashTagService;
     private final Post_HashTagService postHashTagService;
+    private final PostQueryRepository postQueryRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, LikeRepository likeRepository, HashTagService hashTagService, Post_HashTagService postHashTagService) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, CommentRepository commentRepository, LikeRepository likeRepository, HashTagService hashTagService, Post_HashTagService postHashTagService, PostQueryRepository postQueryRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
         this.likeRepository = likeRepository;
         this.hashTagService = hashTagService;
         this.postHashTagService = postHashTagService;
+        this.postQueryRepository = postQueryRepository;
     }
 
     @Transactional
@@ -49,6 +51,19 @@ public class PostService {
          #으로 헤시테그를 나누고 해당 헤시테그가 없다면 해시테그 생성 & postHashTag 생성
          있다면 해시테그 이름으로 해시테그 ID 찾고 중간 postHashTag 생성
          */
+
+
+//        for (int i = 0; i < dto.content().length(); i++) {
+//            if (dto.content().charAt(i) == '#' && dto.content().charAt(i + 1) != ' ') {
+//                if (hashTagService.findIdByName(dto.content().substring(i + 1, dto.content().indexOf(" ", i))) == null) {
+//                    HashTagResponse createdHashTag = hashTagService.create(dto.content().substring(i + 1, dto.content().indexOf(" ", i)));
+//                    postHashTagService.create(post.getId(), createdHashTag.id());
+//                }
+//            } else {
+//                Long hashTagId = hashTagService.findIdByName(dto.content().substring(i + 1, dto.content().indexOf(" ", i)));
+//                postHashTagService.create(post.getId(), hashTagId);
+//            }
+//        }
 
         for (int i = 0; i < dto.content().length(); i++) {
             if (dto.content().charAt(i) == '#') {
@@ -77,6 +92,7 @@ public class PostService {
                 postHashTagService.create(post.getId(), hashTagId);
             }
         }
+
 
         return new PostResponse(
                 post.getId(),
@@ -183,13 +199,27 @@ public class PostService {
 
         Like like = likeRepository.findByUser_LoginIdAndPost_Id(loginId, postId);
         if (like == null) {
-            likeRepository.save(new Like(user, post));
             post.upLikeCount();
+            likeRepository.save(new Like(user, post));
+
         } else {
-            likeRepository.delete(like);
             post.downLikeCount();
+            likeRepository.delete(like);
         }
-
-
+    }
+    @Transactional
+    public List<PostResponse> likedPostByUserId(String userId){
+        List<Post> likedPostsByUser = postQueryRepository.getLikedPostsByUser(userId);
+        return likedPostsByUser.stream()
+                .map(p -> new PostResponse(
+                        p.getId(),
+                        p.getContent(),
+                        p.getCommentCount(),
+                        p.getImageUrl(),
+                        new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
+                        p.getCreatedTime(),
+                        p.getUpdatedTime(),
+                        p.getLikeCount()
+                )).toList();
     }
 }

@@ -72,6 +72,18 @@ public class Post extends BaseEntity {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", commentCount=" + commentCount +
+                ", likeCount=" + likeCount +
+                ", imageUrl=" + imageUrl +
+                ", user=" + user +
+                '}';
+    }
+
     // 댓글수 증가 함수
     public void increaseCommentCount() {
         this.commentCount = commentCount++;
