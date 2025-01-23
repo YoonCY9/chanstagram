@@ -2,11 +2,11 @@ package CTHH.chanstagram.follow;
 
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
-import CTHH.chanstagram.follow.followDTO.CreateFollow;
+
 import CTHH.chanstagram.follow.followDTO.FollowResponse;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -30,7 +30,6 @@ public class FollowService {
             throw new IllegalArgumentException("자기 자신은 팔로우 할 수 없습니다");
         }
 
-
         if (followRepository.existsByFollowerAndFollowee(follower, followee)) {
             Follow follow = followRepository
                     .findByFollower_NickNameAndFollowee_NickName(follower.getNickName(), followee.getNickName()).orElseThrow();
@@ -39,6 +38,28 @@ public class FollowService {
             Follow follow = new Follow(follower, followee);
             followRepository.save(follow);
         }
+    }
+
+    // nickName의 팔로워 리스트
+    public List<FollowResponse> findAllFollowers(String nickName) {
+        List<User> followers = followRepository.findFollowersByFolloweeNickName(nickName);
+
+        return followers.stream()
+                .map(f -> new FollowResponse(
+                        f.getProfileImage(),
+                        f.getUserName(),
+                        f.getNickName())).toList();
+    }
+
+    // nickName의 팔로우리스트
+    public List<FollowResponse> findAllFollowees(String nickName) {
+        List<User> followees = followRepository.findFolloweesByFollowerNickName(nickName);
+
+        return followees.stream()
+                .map(f -> new FollowResponse(
+                        f.getProfileImage(),
+                        f.getUserName(),
+                        f.getNickName())).toList();
     }
 
 
