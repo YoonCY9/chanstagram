@@ -199,5 +199,6 @@ public class followTest {
                 .getList(".", FollowResponse.class);
 
         assertThat(list.get(0).nickName()).isEqualTo("lee");
+
     }
 }
