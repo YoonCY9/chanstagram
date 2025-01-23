@@ -28,6 +28,8 @@ public class PostQueryRepository {
                 .where(like.user.loginId.eq(loginId))
                 .fetch();
     }
+    //좋아요순으로 포스트정렬
+
 
 
 }

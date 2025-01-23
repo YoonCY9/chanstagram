@@ -21,5 +21,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p.user FROM Post p WHERE p.id = :postId") // 게시글 id로 유저정보 반환
     User findUserByPostId(@Param("postId") Long postId);
+
+    List<Post> findAllByOrderByLikeCountDesc();
 }
 
