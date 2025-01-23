@@ -1,4 +1,4 @@
-package CTHH.chanstagram.post;
+package CTHH.chanstagram.post.post_hashtag;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
