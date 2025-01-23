@@ -2,14 +2,12 @@ package CTHH.chanstagram.Comment;
 
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
-import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.post.Post;
 import CTHH.chanstagram.post.PostRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class CommentService {
@@ -30,6 +28,7 @@ public class CommentService {
                 .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
 
         commentRepository.save(new Comment(request.content(),user,post));
+        post.increaseCommentCount();
     }
     @Transactional
     public void update(Long commentId, UpdateCommentRequest request, String userId) {
