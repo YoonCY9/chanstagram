@@ -1,13 +1,11 @@
 package CTHH.chanstagram.follow;
 
 import CTHH.chanstagram.User.UserService;
-import CTHH.chanstagram.follow.followDTO.CreateFollow;
 import CTHH.chanstagram.follow.followDTO.FollowResponse;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class FollowRestController {
@@ -27,5 +25,18 @@ public class FollowRestController {
         followService.follow(userId, nickName);
     }
 
-    // get 요청으로 줘야할것 id, 프로필이미지, nickname , username
+    // get 요청으로 줘야할것 프로필이미지, nickname , username
+
+    // {nickName}의 팔로워 리스트
+    @GetMapping("/follows/followers/{nickName}")
+    public List<FollowResponse> findAllFollowers(@PathVariable String nickName) {
+        return followService.findAllFollowers(nickName);
+    }
+    // {nickName}의 팔로우 리스트
+    @GetMapping("/follows/followees/{nickName}")
+    public List<FollowResponse> findAllFollowees(@PathVariable String nickName) {
+        return followService.findAllFollowees(nickName);
+    }
+
+
 }
