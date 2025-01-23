@@ -154,6 +154,13 @@ Post like(post_user) User
 - Long postId
   -> 좋아요값이 true 이면 like 테이블에 생성, false 이면 삭제(먼저 값 확인 하고 true 이면 삭제,false 이면 그대로)
 
+### like의 추가기능
+- 좋아요 수 만들기 
+- 좋아요가 가장 많은 포스트 순으로 정렬
+- user가 좋아요한 포스트만 filter하기
+- 
+
+
 - ### 팔로우 Follow
 - #### Entity 필드
 - Long id
