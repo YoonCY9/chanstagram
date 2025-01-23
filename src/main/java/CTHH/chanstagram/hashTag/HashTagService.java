@@ -1,9 +1,6 @@
 package CTHH.chanstagram.hashTag;
 
-import jakarta.validation.constraints.Null;
 import org.springframework.stereotype.Service;
-
-import java.util.NoSuchElementException;
 
 @Service
 public class HashTagService {
@@ -14,8 +11,9 @@ public class HashTagService {
         this.hashTagRepository = hashTagRepository;
     }
 
-    public void create(String name) {
-        hashTagRepository.save(new HashTag(name));
+    public HashTagResponse create(String name) {
+        HashTag hashTag = hashTagRepository.save(new HashTag(name));
+        return new HashTagResponse(hashTag.getName(), hashTag.getId());
     }
 
     public Long findIdByName(String name) {
