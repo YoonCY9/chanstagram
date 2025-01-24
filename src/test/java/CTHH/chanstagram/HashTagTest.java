@@ -4,9 +4,12 @@ import CTHH.chanstagram.User.DTO.LoginRequest;
 import CTHH.chanstagram.User.DTO.LoginResponse;
 import CTHH.chanstagram.User.DTO.UserDetailRequest;
 import CTHH.chanstagram.User.Gender;
+import CTHH.chanstagram.hashTag.HashTag;
 import CTHH.chanstagram.hashTag.HashTagRepository;
 import CTHH.chanstagram.post.DTO.CreatePost;
+import CTHH.chanstagram.post.DTO.PostListResponse;
 import CTHH.chanstagram.post.DTO.PostResponse;
+import CTHH.chanstagram.post.postHashTag.PostHashTagRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +21,9 @@ import org.springframework.http.HttpHeaders;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.NoSuchElementException;
+
+import static com.mysema.commons.lang.Assert.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class HashTagTest {
@@ -32,6 +38,9 @@ public class HashTagTest {
 
     @Autowired
     HashTagRepository hashTagRepository;
+
+    @Autowired
+    PostHashTagRepository postHashTagRepository;
 
     @Test
     void hashTagTest() {
@@ -64,7 +73,7 @@ public class HashTagTest {
                         .given().log().all()
                         .contentType(ContentType.JSON)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.token())
-                        .body(new CreatePost(imageUrl, "테스트입니다"))
+                        .body(new CreatePost(imageUrl, "테스트입니다 #Test"))
                         .when()
                         .post("/posts")
                         .then().log().all()
@@ -72,6 +81,19 @@ public class HashTagTest {
                         .extract()
                         .as(PostResponse.class);
 
+        HashTag hashTag = hashTagRepository.findById(1L).orElseThrow(() -> new NoSuchElementException("못찾아따"));
 
+        System.out.println("------------------------------------------------------------------------" + hashTag.getName());
+
+        System.out.println("postHashTagRepository.findById(1L).orElseThrow().getPost().getContent() = " + postHashTagRepository.findById(1L).orElseThrow().getPost().getContent());
+        System.out.println("postHashTagRepository.findById(1L).orElseThrow().getHashTag().getName() = " + postHashTagRepository.findById(1L).orElseThrow().getHashTag().getName());
+
+        RestAssured
+                .given().log().all()
+                .pathParam("hashtagname", "Test")
+                .when()
+                .get("/hashtagposts/{hashtagname}")
+                .then().log().all()
+                .statusCode(200);
     }
 }

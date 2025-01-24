@@ -17,7 +17,10 @@ public class HashTagService {
     }
 
     public Long findIdByName(String name) {
-        Long hashTagId = hashTagRepository.findIdByName(name).orElse(null);
-        return hashTagId;
+        HashTag hashTag = hashTagRepository.findByName(name).orElse(null);
+        if (hashTag == null) {
+            return null;
+        }
+        return hashTag.getId();
     }
 }
