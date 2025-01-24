@@ -134,9 +134,11 @@ public class PostService {
                 p.getUpdatedTime(),
                 p.getLikeCount()
         ));
+    }
 
-//        List<PostResponse> postResponse = posts.stream()
-//                .sorted(Comparator.comparing(Post::getCreatedTime).reversed()) // 최신순으로 정렬
+//    public Page<PostResponse> findAllByLike(Pageable pageable) { // 게시글 전체조회
+//        List<Post> byLikeCountDesc = postRepository.findAllByOrderByLikeCountDesc();
+//        return byLikeCountDesc.stream()
 //                .map(p -> new PostResponse(
 //                        p.getId(),
 //                        p.getContent(),
@@ -147,26 +149,7 @@ public class PostService {
 //                        p.getUpdatedTime(),
 //                        p.getLikeCount()
 //                )).toList();
-//        return new PageImpl<>(
-//                postResponse,
-//                pageable,
-//                posts.getTotalElements()
-//        );
-    }
-    public List<PostResponse> findAllByLike() { // 게시글 전체조회
-        List<Post> byLikeCountDesc = postRepository.findAllByOrderByLikeCountDesc();
-        return byLikeCountDesc.stream()
-                .map(p -> new PostResponse(
-                        p.getId(),
-                        p.getContent(),
-                        p.getCommentCount(),
-                        p.getImageUrl(),
-                        new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
-                        p.getCreatedTime(),
-                        p.getUpdatedTime(),
-                        p.getLikeCount()
-                )).toList();
-    }
+//    }
 
 
     public PostDetailedResponse findByPostId(Long postId) {

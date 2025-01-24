@@ -7,6 +7,7 @@ import CTHH.chanstagram.post.postHashTag.PostHashTagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,26 +41,24 @@ public class PostRestController {
     @GetMapping("/posts") // 모든 게시글 조회
     public Page<PostResponse> findAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false, value = "orderby") String criteria) {
 
-        return postService.findAll(pageable);
+        // http://localhost:8080/posts?page=0&size=5&orderby=like (예시)
+
+        Sort createdTime = Sort.by(Sort.Direction.DESC, "createdTime");
+        Pageable createdTimePage = PageRequest.of(page, size, createdTime);
+
+        Sort likeCount = Sort.by(Sort.Direction.DESC, "likeCount");
+        Pageable likeCountPage = PageRequest.of(page, size, likeCount);
+
+        if ("like".equals(criteria)) {
+            return postService.findAll(likeCountPage);
+        } else {
+            return postService.findAll(createdTimePage);
+        }
+
     }
-
-//    @GetMapping("/posts") // 모든 게시글 조회
-//    public Page<PostResponse> findAll(
-//            @RequestParam(defaultValue = "1") int page,
-//            @RequestParam(defaultValue = "10") int size,
-//            @RequestParam(required = false, value = "orderby") String criteria) {
-//
-//        Pageable pageable = PageRequest.of(page - 1, size);
-//
-//        if ("like".equals(criteria)) return postService.findAllByLike();
-//       else return postService.findAll(pageable);
-//
-//
-//    }
 
     @GetMapping("/posts/detailed/{postId}")
     public PostDetailedResponse findByPostId(@PathVariable Long postId) {
