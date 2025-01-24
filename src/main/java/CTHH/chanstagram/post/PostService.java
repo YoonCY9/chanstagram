@@ -136,9 +136,8 @@ public class PostService {
                         p.getLikeCount()
                 )).toList();
     }
-    public List<PostResponse> findAll(String criteria) { // 게시글 전체조회
+    public List<PostResponse> findAllByLike() { // 게시글 전체조회
         List<Post> byLikeCountDesc = postRepository.findAllByOrderByLikeCountDesc();
-
         return byLikeCountDesc.stream()
                 .map(p -> new PostResponse(
                         p.getId(),

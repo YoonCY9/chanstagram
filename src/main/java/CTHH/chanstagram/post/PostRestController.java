@@ -33,7 +33,7 @@ public class PostRestController {
 
     @GetMapping("/posts") // 모든 게시글 조회
     public List<PostResponse> findAll(@RequestParam(required = false, value = "orderby") String criteria) {
-        if ("like".equals(criteria)) return postService.findAll(criteria);
+        if ("like".equals(criteria)) return postService.findAllByLike();
        else return postService.findAll();
 
     }
