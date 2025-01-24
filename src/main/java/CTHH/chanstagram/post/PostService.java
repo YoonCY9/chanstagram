@@ -14,6 +14,7 @@ import CTHH.chanstagram.post.post_hashtag.Post_HashTagService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -123,6 +124,7 @@ public class PostService {
         List<Post> posts = postRepository.findAll();
 
         return posts.stream()
+                .sorted(Comparator.comparing(Post::getCreatedTime).reversed()) // 최신순으로 정렬
                 .map(p -> new PostResponse(
                         p.getId(),
                         p.getContent(),
