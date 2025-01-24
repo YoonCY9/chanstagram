@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface HashTagRepository extends JpaRepository<HashTag, Long> {
 
-    // 해시태그 이름으로 ID를 조회하는 메서드
-    Optional<Long> findIdByName(String name);
+    // name으로 HashTag를 조회하는 쿼리 메서드
+    Optional<HashTag> findByName(String name);
 }

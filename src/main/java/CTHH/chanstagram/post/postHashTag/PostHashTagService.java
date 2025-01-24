@@ -35,9 +35,9 @@ public class PostHashTagService {
     }
 
     public PostListResponse findByHashTagName(String hashTagName) {
-        Long hashTagId = hashTagRepository.findIdByName(hashTagName).orElseThrow(
-                () -> new NoSuchElementException("해당하는 해시테그가 없습니다"));
-        List<Post> findPosts = postHashTagQueryMethodRepository.findPostsByHashTagId(hashTagId);
+        HashTag hashTag = hashTagRepository.findByName(hashTagName).orElseThrow(
+                () -> new NoSuchElementException("해당하는 해시테그가 없습니다."));
+        List<Post> findPosts = postHashTagQueryMethodRepository.findPostsByHashTagId(hashTag.getId());
         return new PostListResponse(findPosts.stream()
                 .map(post -> new PostResponse(post.getId(),
                         post.getContent(),
