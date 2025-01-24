@@ -55,19 +55,6 @@ public class PostService {
          있다면 해시테그 이름으로 해시테그 ID 찾고 중간 postHashTag 생성
          */
 
-
-//        for (int i = 0; i < dto.content().length(); i++) {
-//            if (dto.content().charAt(i) == '#' && dto.content().charAt(i + 1) != ' ') {
-//                if (hashTagService.findIdByName(dto.content().substring(i + 1, dto.content().indexOf(" ", i))) == null) {
-//                    HashTagResponse createdHashTag = hashTagService.create(dto.content().substring(i + 1, dto.content().indexOf(" ", i)));
-//                    postHashTagService.create(post.getId(), createdHashTag.id());
-//                }
-//            } else {
-//                Long hashTagId = hashTagService.findIdByName(dto.content().substring(i + 1, dto.content().indexOf(" ", i)));
-//                postHashTagService.create(post.getId(), hashTagId);
-//            }
-//        }
-
         for (int i = 0; i < dto.content().length(); i++) {
             if (dto.content().charAt(i) == '#') {
                 // 해시태그의 끝 위치 계산
@@ -85,14 +72,13 @@ public class PostService {
                 }
 
                 // 해시태그 ID 조회 및 생성
-                Long hashTagId = hashTagService.findIdByName(hashTagName);
-                if (hashTagId == null) {
+                if (hashTagService.findIdByName(hashTagName) == null) {
                     HashTagResponse createdHashTag = hashTagService.create(hashTagName);
-                    hashTagId = createdHashTag.id();
+                    postHashTagService.create(post.getId(), createdHashTag.id());
+                } else {
+                    postHashTagService.create(post.getId(), hashTagService.findIdByName(hashTagName));
                 }
 
-                // Post-HashTag 관계 생성
-                postHashTagService.create(post.getId(), hashTagId);
             }
         }
 
@@ -135,22 +121,6 @@ public class PostService {
                 p.getLikeCount()
         ));
     }
-
-//    public Page<PostResponse> findAllByLike(Pageable pageable) { // 게시글 전체조회
-//        List<Post> byLikeCountDesc = postRepository.findAllByOrderByLikeCountDesc();
-//        return byLikeCountDesc.stream()
-//                .map(p -> new PostResponse(
-//                        p.getId(),
-//                        p.getContent(),
-//                        p.getCommentCount(),
-//                        p.getImageUrl(),
-//                        new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
-//                        p.getCreatedTime(),
-//                        p.getUpdatedTime(),
-//                        p.getLikeCount()
-//                )).toList();
-//    }
-
 
     public PostDetailedResponse findByPostId(Long postId) {
         List<Comment> comments = commentRepository.findByPostId(postId);
@@ -224,10 +194,12 @@ public class PostService {
             likeRepository.delete(like);
         }
     }
+
     @Transactional
     public List<PostResponse> likedPostByUserId(String nickname){
         User byNickName = userRepository.findByNickName(nickname);
         List<Post> likedPostsByUser = postQueryRepository.getLikedPostsByUser(byNickName.getLoginId());
+
         return likedPostsByUser.stream()
                 .map(p -> new PostResponse(
                         p.getId(),
