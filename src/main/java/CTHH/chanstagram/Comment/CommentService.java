@@ -2,6 +2,8 @@ package CTHH.chanstagram.Comment;
 
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
+import CTHH.chanstagram.post.Like;
+import CTHH.chanstagram.post.LikeRepository;
 import CTHH.chanstagram.post.Post;
 import CTHH.chanstagram.post.PostRepository;
 import jakarta.transaction.Transactional;
@@ -14,11 +16,13 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final LikeRepository likeRepository;
 
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository) {
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.likeRepository = likeRepository;
     }
 
     public CommentResponse create(CreateCommentRequest request,String userId) {
@@ -53,5 +57,22 @@ public class CommentService {
         if (comment.getUser().equals(user)) {
             commentRepository.deleteById(commentId);
         } else throw new RuntimeException("작성자가 일치하지 않습니다.");
+    }
+
+
+    @Transactional
+    public void like(Long commentId, String loginId) {
+        User user = userRepository.findByLoginId(loginId).orElseThrow(() ->
+                new NoSuchElementException("존재하지 않는 유저" + loginId));
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+                new NoSuchElementException("존재하지 않는 유저 게시글" + commentId));
+
+        Like like = likeRepository.findByUser_LoginIdAndComment_Id(loginId, commentId);
+        if (like == null) {
+            likeRepository.save(new Like(user, comment));
+
+        } else {
+            likeRepository.delete(like);
+        }
     }
 }

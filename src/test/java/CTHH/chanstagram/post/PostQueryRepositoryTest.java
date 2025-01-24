@@ -76,8 +76,8 @@ public class PostQueryRepositoryTest {
     @Test
     @Transactional
     void name() {
-        User user = new User("윤태우", "you", "younId", "11111", Gender.Man,
-                LocalDate.parse("2001-08-08"), "잘부탁드립니다!", "ImageUrl", "01074877796");
+        User user = new User("윤태우", "you", "younId5", "11111", Gender.Man,
+                LocalDate.parse("2001-08-08"), "잘부탁드립니다!", "ImageUrl", "01074877797");
         em.persist(user);
 
         Post post1 = new Post("askmh #Test ", List.of(), user);

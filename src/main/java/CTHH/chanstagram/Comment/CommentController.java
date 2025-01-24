@@ -36,6 +36,11 @@ public class CommentController {
         String userid = userService.getProfile(authorization);
         service.deleteById(commentId,userid);
     }
-
-
+    //댓글좋아요
+    @PostMapping("/comments/{commentId}")
+    public void like(@PathVariable Long commentId,
+                     @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+        String userId = userService.getProfile(authorization);
+        service.like(commentId, userId);
+    }
 }
