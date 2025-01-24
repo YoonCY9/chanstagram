@@ -4,6 +4,9 @@ import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.post.DTO.*;
 
 import CTHH.chanstagram.post.postHashTag.PostHashTagService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,12 +38,28 @@ public class PostRestController {
     }
 
     @GetMapping("/posts") // 모든 게시글 조회
-    public List<PostResponse> findAll(@RequestParam(required = false, value = "orderby") String criteria) {
-        if ("like".equals(criteria)) return postService.findAllByLike();
-       else return postService.findAll();
+    public Page<PostResponse> findAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
 
-
+        return postService.findAll(pageable);
     }
+
+//    @GetMapping("/posts") // 모든 게시글 조회
+//    public Page<PostResponse> findAll(
+//            @RequestParam(defaultValue = "1") int page,
+//            @RequestParam(defaultValue = "10") int size,
+//            @RequestParam(required = false, value = "orderby") String criteria) {
+//
+//        Pageable pageable = PageRequest.of(page - 1, size);
+//
+//        if ("like".equals(criteria)) return postService.findAllByLike();
+//       else return postService.findAll(pageable);
+//
+//
+//    }
 
     @GetMapping("/posts/detailed/{postId}")
     public PostDetailedResponse findByPostId(@PathVariable Long postId) {

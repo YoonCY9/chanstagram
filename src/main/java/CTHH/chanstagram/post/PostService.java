@@ -11,6 +11,9 @@ import CTHH.chanstagram.hashTag.HashTagService;
 import CTHH.chanstagram.post.DTO.*;
 import CTHH.chanstagram.post.postHashTag.PostHashTagService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -119,21 +122,36 @@ public class PostService {
                 )).toList();
     }
 
-    public List<PostResponse> findAll() { // 게시글 전체조회
-        List<Post> posts = postRepository.findAll();
-
-        return posts.stream()
-                .sorted(Comparator.comparing(Post::getCreatedTime).reversed()) // 최신순으로 정렬
+    public Page<PostResponse> findAll(Pageable pageable) { // 게시글 전체조회
+        return postRepository.findAll(pageable)
                 .map(p -> new PostResponse(
-                        p.getId(),
-                        p.getContent(),
-                        p.getCommentCount(),
-                        p.getImageUrl(),
-                        new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
-                        p.getCreatedTime(),
-                        p.getUpdatedTime(),
-                        p.getLikeCount()
-                )).toList();
+                p.getId(),
+                p.getContent(),
+                p.getCommentCount(),
+                p.getImageUrl(),
+                new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
+                p.getCreatedTime(),
+                p.getUpdatedTime(),
+                p.getLikeCount()
+        ));
+
+//        List<PostResponse> postResponse = posts.stream()
+//                .sorted(Comparator.comparing(Post::getCreatedTime).reversed()) // 최신순으로 정렬
+//                .map(p -> new PostResponse(
+//                        p.getId(),
+//                        p.getContent(),
+//                        p.getCommentCount(),
+//                        p.getImageUrl(),
+//                        new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
+//                        p.getCreatedTime(),
+//                        p.getUpdatedTime(),
+//                        p.getLikeCount()
+//                )).toList();
+//        return new PageImpl<>(
+//                postResponse,
+//                pageable,
+//                posts.getTotalElements()
+//        );
     }
     public List<PostResponse> findAllByLike() { // 게시글 전체조회
         List<Post> byLikeCountDesc = postRepository.findAllByOrderByLikeCountDesc();
