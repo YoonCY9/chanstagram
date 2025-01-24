@@ -2,6 +2,7 @@ package CTHH.chanstagram.post;
 
 import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.post.DTO.*;
+import jakarta.annotation.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +32,10 @@ public class PostRestController {
     }
 
     @GetMapping("/posts") // 모든 게시글 조회
-    public List<PostResponse> findAll() {
-        return postService.findAll();
+    public List<PostResponse> findAll(@RequestParam(required = false, value = "orderby") String criteria) {
+        if ("like".equals(criteria)) return postService.findAll(criteria);
+       else return postService.findAll();
+
     }
 
     @GetMapping("/posts/detailed/{postId}")
