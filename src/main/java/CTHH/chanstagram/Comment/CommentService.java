@@ -2,10 +2,13 @@ package CTHH.chanstagram.Comment;
 
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
+import CTHH.chanstagram.hashTag.HashTagResponse;
+import CTHH.chanstagram.hashTag.HashTagService;
 import CTHH.chanstagram.post.Like;
 import CTHH.chanstagram.post.LikeRepository;
 import CTHH.chanstagram.post.Post;
 import CTHH.chanstagram.post.PostRepository;
+import CTHH.chanstagram.post.postHashTag.PostHashTagService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +20,16 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
+    private final HashTagService hashTagService;
+    private final PostHashTagService postHashTagService;
 
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository) {
+    public CommentService(CommentRepository commentRepository, PostRepository postRepository, UserRepository userRepository, LikeRepository likeRepository, HashTagService hashTagService, PostHashTagService postHashTagService) {
         this.commentRepository = commentRepository;
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
+        this.hashTagService = hashTagService;
+        this.postHashTagService = postHashTagService;
     }
 
     public CommentResponse create(CreateCommentRequest request,String userId) {
@@ -32,6 +39,33 @@ public class CommentService {
                 .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
         Comment comment = new Comment(request.content(), user, post);
         commentRepository.save(comment);
+
+        for (int i = 0; i < comment.getContent().length(); i++) {
+            if (comment.getContent().charAt(i) == '#') {
+                // 해시태그의 끝 위치 계산
+                int endIndex = comment.getContent().indexOf(" ", i);
+                if (endIndex == -1) {
+                    endIndex =comment.getContent().length();
+                }
+
+                // 해시태그 추출
+                String hashTagName = comment.getContent().substring(i + 1, endIndex).trim();
+
+                // 빈 해시태그는 건너뜀
+                if (hashTagName.isEmpty()) {
+                    continue;
+                }
+
+                // 해시태그 ID 조회 및 생성
+                if (hashTagService.findIdByName(hashTagName) == null) {
+                    HashTagResponse createdHashTag = hashTagService.create(hashTagName);
+                    postHashTagService.create(post.getId(), createdHashTag.id());
+                } else {
+                    postHashTagService.create(post.getId(), hashTagService.findIdByName(hashTagName));
+                }
+
+            }
+        }
         post.increaseCommentCount();
         return new CommentResponse(comment.id,comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
 
