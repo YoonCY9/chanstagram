@@ -363,9 +363,9 @@ public class postTest {
         //게시글 조회
         List<PostResponse> posts = RestAssured
                 .given()
-                .pathParam("loginId", "yeonId")
+                .pathParam("nickname", "hoho")
                 .when()
-                .get("/likedPosts/{loginId}")
+                .get("/likedPosts/{nickname}")
                 .then()
                 .statusCode(200)
                 .extract()
