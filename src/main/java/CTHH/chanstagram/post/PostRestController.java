@@ -63,9 +63,9 @@ public class PostRestController {
         String userId = userService.getProfile(authorization);
         postService.like(postId,userId);
     }
-    @GetMapping("/likedPosts/{loginId}") // user_id으로 좋아요한 게시글 조회
-    public List<PostResponse> likedPostByUserId(@PathVariable String loginId) {
-       return postService.likedPostByUserId(loginId);
+    @GetMapping("/likedPosts/{nickname}") // user_id으로 좋아요한 게시글 조회
+    public List<PostResponse> likedPostByUserId(@PathVariable String nickname) {
+       return postService.likedPostByUserId(nickname);
     }
 
 }

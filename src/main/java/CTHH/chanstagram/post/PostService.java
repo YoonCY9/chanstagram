@@ -226,8 +226,9 @@ public class PostService {
         }
     }
     @Transactional
-    public List<PostResponse> likedPostByUserId(String userId){
-        List<Post> likedPostsByUser = postQueryRepository.getLikedPostsByUser(userId);
+    public List<PostResponse> likedPostByUserId(String nickname){
+        User byNickName = userRepository.findByNickName(nickname);
+        List<Post> likedPostsByUser = postQueryRepository.getLikedPostsByUser(byNickName.getLoginId());
         return likedPostsByUser.stream()
                 .map(p -> new PostResponse(
                         p.getId(),
