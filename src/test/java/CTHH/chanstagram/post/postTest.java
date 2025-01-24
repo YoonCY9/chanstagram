@@ -224,8 +224,9 @@ public class postTest {
                 .jsonPath()
                 .getList(".", PostResponse.class);
 
-        System.out.println(posts.get(0).content());
-        System.out.println(posts.get(1).content());
+        // 가장 최신 게시글이 맨 앞
+        System.out.println(posts.get(0).createdTime());
+        System.out.println(posts.get(1).createdTime());
     }
 
     @Test
