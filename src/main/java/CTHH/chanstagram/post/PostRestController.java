@@ -71,8 +71,8 @@ public class PostRestController {
 
     @GetMapping("/likedPosts/{nickname}") // user_id으로 좋아요한 게시글 조회
     public List<PostResponse> likedPostByUserId(@PathVariable String nickname) {
-       return postService.likedPostByUserId(nickname);
-
+        return postService.likedPostByUserId(nickname);
+    }
 
     @GetMapping("/hashtagposts/{hashtagname}")
     public PostListResponse findByHashTagName(@PathVariable(name = "hashtagname") String hashTagName) {
