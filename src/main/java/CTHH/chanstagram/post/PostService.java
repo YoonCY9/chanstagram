@@ -134,6 +134,22 @@ public class PostService {
                         p.getLikeCount()
                 )).toList();
     }
+    public List<PostResponse> findAll(String criteria) { // 게시글 전체조회
+        List<Post> byLikeCountDesc = postRepository.findAllByOrderByLikeCountDesc();
+
+        return byLikeCountDesc.stream()
+                .map(p -> new PostResponse(
+                        p.getId(),
+                        p.getContent(),
+                        p.getCommentCount(),
+                        p.getImageUrl(),
+                        new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
+                        p.getCreatedTime(),
+                        p.getUpdatedTime(),
+                        p.getLikeCount()
+                )).toList();
+    }
+
 
     public PostDetailedResponse findByPostId(Long postId) {
         List<Comment> comments = commentRepository.findByPostId(postId);

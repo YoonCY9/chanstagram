@@ -23,7 +23,7 @@ public class PostQueryRepositoryTest {
 
     @Test
     void 유저별로좋아요리스트() {
-        User user = new User("윤태우", "youn", "younId", "11111", Gender.Man,
+        User user = new User("윤태우", "you", "younId", "11111", Gender.Man,
                 LocalDate.parse("2001-08-08"), "잘부탁드립니다!", "ImageUrl", "01074877796");
         em.persist(user);
         Post post1 = new Post("",List.of(),user);
