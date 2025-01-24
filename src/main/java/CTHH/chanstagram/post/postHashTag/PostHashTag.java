@@ -1,11 +1,11 @@
-package CTHH.chanstagram.post.post_hashtag;
+package CTHH.chanstagram.post.postHashTag;
 
 import CTHH.chanstagram.hashTag.HashTag;
 import CTHH.chanstagram.post.Post;
 import jakarta.persistence.*;
 
 @Entity
-public class Post_HashTag {
+public class PostHashTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,11 +17,11 @@ public class Post_HashTag {
     @ManyToOne
     private HashTag hashTag;
 
-    protected Post_HashTag() {
+    protected PostHashTag() {
 
     }
 
-    public Post_HashTag(HashTag hashTag, Post post) {
+    public PostHashTag(HashTag hashTag, Post post) {
         this.hashTag = hashTag;
         this.post = post;
     }
