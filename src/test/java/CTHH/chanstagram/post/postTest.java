@@ -224,8 +224,9 @@ public class postTest {
                 .jsonPath()
                 .getList(".", PostResponse.class);
 
-        System.out.println(posts.get(0).content());
-        System.out.println(posts.get(1).content());
+        // 가장 최신 게시글이 맨 앞
+        System.out.println(posts.get(0).createdTime());
+        System.out.println(posts.get(1).createdTime());
     }
 
     @Test
@@ -358,6 +359,7 @@ public class postTest {
                 .post("/posts/{postId}")
                 .then()
                 .statusCode(200);
+
         //게시글 조회
         List<PostResponse> posts = RestAssured
                 .given()
@@ -370,7 +372,109 @@ public class postTest {
                 .jsonPath()
                 .getList(".", PostResponse.class);
 
+        System.out.println(posts);
+    }
 
+    @Test
+    void post좋아요순전체조회() {
+
+        //사람1 회원가입,로그인,사람1이 게시글생성
+        RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new UserDetailRequest("윤태우", "youn", "younId", "11111", Gender.Man,
+                        LocalDate.parse("2001-08-08"), "잘부탁드립니다!", "ImageUrl", "01074877796"))
+                .when()
+                .post("/users")
+                .then().log().all()
+                .statusCode(200);
+
+        LoginResponse token = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new LoginRequest("younId", "11111"))
+                .when()
+                .post("/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(LoginResponse.class);
+
+        List<String> imageUrl = List.of("https://example.com/image1.jpg111",
+                "https://example.com/image2.jpg");
+
+        PostResponse postResponse =
+                RestAssured
+                        .given()
+                        .contentType(ContentType.JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.token())
+                        .body(new CreatePost(imageUrl, "테스트입니다"))
+                        .when()
+                        .post("/posts")
+                        .then()
+                        .statusCode(200)
+                        .extract()
+                        .as(PostResponse.class);
+        PostResponse postResponse1 =
+                RestAssured
+                        .given()
+                        .contentType(ContentType.JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.token())
+                        .body(new CreatePost(imageUrl, "테스트입니다1"))
+                        .when()
+                        .post("/posts")
+                        .then()
+                        .statusCode(200)
+                        .extract()
+                        .as(PostResponse.class);
+
+
+
+        //사람2 회원가입, 로그인
+        RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new UserDetailRequest("이호연", "hoho", "yeonId", "11111", Gender.Woman,
+                        LocalDate.parse("2001-08-08"), "잘부탁드립니다!!", "ImageUrl", "01074877706"))
+                .when()
+                .post("/users")
+                .then().log().all()
+                .statusCode(200);
+
+        LoginResponse token1 = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new LoginRequest("yeonId", "11111"))
+                .when()
+                .post("/login")
+                .then().log().all()
+                .statusCode(200)
+                .extract()
+                .as(LoginResponse.class);
+
+        //좋아요하기
+        RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token1.token())
+                .pathParam("postId", postResponse.postId())
+                .when()
+                .post("/posts/{postId}")
+                .then()
+                .statusCode(200);
+
+        //게시글 조회
+        List<PostResponse> posts = RestAssured
+                .given()
+                .queryParam("orderby", "like")
+                .when()
+                .get("/posts")
+                .then()
+                .statusCode(200)
+                .extract()
+                .jsonPath()
+                .getList(".", PostResponse.class);
+
+        System.out.println(posts);
     }
 
 

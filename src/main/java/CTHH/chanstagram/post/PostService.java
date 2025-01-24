@@ -13,6 +13,7 @@ import CTHH.chanstagram.post.postHashTag.PostHashTagService;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -122,6 +123,7 @@ public class PostService {
         List<Post> posts = postRepository.findAll();
 
         return posts.stream()
+                .sorted(Comparator.comparing(Post::getCreatedTime).reversed()) // 최신순으로 정렬
                 .map(p -> new PostResponse(
                         p.getId(),
                         p.getContent(),
@@ -133,6 +135,22 @@ public class PostService {
                         p.getLikeCount()
                 )).toList();
     }
+    public List<PostResponse> findAll(String criteria) { // 게시글 전체조회
+        List<Post> byLikeCountDesc = postRepository.findAllByOrderByLikeCountDesc();
+
+        return byLikeCountDesc.stream()
+                .map(p -> new PostResponse(
+                        p.getId(),
+                        p.getContent(),
+                        p.getCommentCount(),
+                        p.getImageUrl(),
+                        new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
+                        p.getCreatedTime(),
+                        p.getUpdatedTime(),
+                        p.getLikeCount()
+                )).toList();
+    }
+
 
     public PostDetailedResponse findByPostId(Long postId) {
         List<Comment> comments = commentRepository.findByPostId(postId);
