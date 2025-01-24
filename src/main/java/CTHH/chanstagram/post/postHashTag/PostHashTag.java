@@ -5,7 +5,7 @@ import CTHH.chanstagram.post.Post;
 import jakarta.persistence.*;
 
 @Entity
-public class postHashTag {
+public class PostHashTag {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,11 +17,11 @@ public class postHashTag {
     @ManyToOne
     private HashTag hashTag;
 
-    protected postHashTag() {
+    protected PostHashTag() {
 
     }
 
-    public postHashTag(HashTag hashTag, Post post) {
+    public PostHashTag(HashTag hashTag, Post post) {
         this.hashTag = hashTag;
         this.post = post;
     }

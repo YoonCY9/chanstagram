@@ -3,6 +3,7 @@ package CTHH.chanstagram.post;
 import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.post.DTO.*;
 
+import CTHH.chanstagram.post.postHashTag.PostHashTagService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +37,7 @@ public class PostRestController {
     @GetMapping("/posts") // 모든 게시글 조회
     public List<PostResponse> findAll(@RequestParam(required = false, value = "orderby") String criteria) {
         if ("like".equals(criteria)) return postService.findAll(criteria);
-       else return postService.findAll();
+        else return postService.findAll();
 
     }
 
@@ -73,7 +74,7 @@ public class PostRestController {
     }
 
     @GetMapping("/hashtagposts/{hashtagname}")
-    public PostListResponse findByHashTagName(@RequestParam(name = "hashtagname") String hashTagName) {
+    public PostListResponse findByHashTagName(@PathVariable(name = "hashtagname") String hashTagName) {
         return postHashTagService.findByHashTagName(hashTagName);
     }
 
