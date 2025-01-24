@@ -122,9 +122,8 @@ public class PostService {
                 )).toList();
     }
 
-    public List<PostResponse> findAll(String criteria) { // 게시글 전체조회
+    public List<PostResponse> findAllByLike() { // 게시글 전체조회
         List<Post> byLikeCountDesc = postRepository.findAllByOrderByLikeCountDesc();
-
         return byLikeCountDesc.stream()
                 .map(p -> new PostResponse(
                         p.getId(),
@@ -213,8 +212,10 @@ public class PostService {
     }
 
     @Transactional
-    public List<PostResponse> likedPostByUserId(String userId) {
-        List<Post> likedPostsByUser = postQueryRepository.getLikedPostsByUser(userId);
+    public List<PostResponse> likedPostByUserId(String nickname){
+        User byNickName = userRepository.findByNickName(nickname);
+        List<Post> likedPostsByUser = postQueryRepository.getLikedPostsByUser(byNickName.getLoginId());
+
         return likedPostsByUser.stream()
                 .map(p -> new PostResponse(
                         p.getId(),

@@ -31,8 +31,8 @@ public class PostQueryRepositoryTest {
 
     @Test
     void 유저별로좋아요리스트() {
-        User user = new User("윤태우", "you", "younId", "11111", Gender.Man,
-                LocalDate.parse("2001-08-08"), "잘부탁드립니다!", "ImageUrl", "01074877796");
+        User user = new User("윤태우1", "you1", "younId1", "11111", Gender.Man,
+                LocalDate.parse("2001-08-08"), "잘부탁드립니다!", "ImageUrl", "01074877799");
         em.persist(user);
         Post post1 = new Post("", List.of(), user);
         Post post2 = new Post("", List.of(), user);
@@ -45,7 +45,7 @@ public class PostQueryRepositoryTest {
         em.persist(post4);
         em.persist(post5);
 
-        User user1 = new User("이호연", "yeon", "yeonId", "11111", Gender.Woman,
+        User user1 = new User("이호연", "yeon", "yeonId1", "11111", Gender.Woman,
                 LocalDate.parse("2001-08-18"), "잘부탁드립니다!!!", "ImageUrl", "11074877796");
         User user2 = new User("이호", "yeo", "yeoId", "11111", Gender.Woman,
                 LocalDate.parse("2001-08-18"), "잘부탁드립니다!!!", "ImageUrl", "11074877795");
