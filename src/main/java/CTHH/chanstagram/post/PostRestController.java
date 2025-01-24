@@ -36,8 +36,9 @@ public class PostRestController {
 
     @GetMapping("/posts") // 모든 게시글 조회
     public List<PostResponse> findAll(@RequestParam(required = false, value = "orderby") String criteria) {
-        if ("like".equals(criteria)) return postService.findAll(criteria);
-        else return postService.findAll();
+        if ("like".equals(criteria)) return postService.findAllByLike();
+       else return postService.findAll();
+
 
     }
 
@@ -68,14 +69,15 @@ public class PostRestController {
         postService.like(postId, userId);
     }
 
-    @GetMapping("/likedPosts/{loginId}") // user_id으로 좋아요한 게시글 조회
-    public List<PostResponse> likedPostByUserId(@PathVariable String loginId) {
-        return postService.likedPostByUserId(loginId);
-    }
+    @GetMapping("/likedPosts/{nickname}") // user_id으로 좋아요한 게시글 조회
+    public List<PostResponse> likedPostByUserId(@PathVariable String nickname) {
+       return postService.likedPostByUserId(nickname);
+
 
     @GetMapping("/hashtagposts/{hashtagname}")
     public PostListResponse findByHashTagName(@PathVariable(name = "hashtagname") String hashTagName) {
         return postHashTagService.findByHashTagName(hashTagName);
+
     }
 
 }
