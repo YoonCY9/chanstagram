@@ -2,6 +2,7 @@ package CTHH.chanstagram.post;
 
 import CTHH.chanstagram.User.UserService;
 import CTHH.chanstagram.post.DTO.*;
+import CTHH.chanstagram.post.postHashTag.PostHashTagService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +13,12 @@ public class PostRestController {
 
     private final PostService postService;
     private final UserService userService;
+    private final PostHashTagService postHashTagService;
 
-    public PostRestController(PostService postService, UserService userService) {
+    public PostRestController(PostService postService, UserService userService, PostHashTagService postHashTagService) {
         this.postService = postService;
         this.userService = userService;
+        this.postHashTagService = postHashTagService;
     }
 
     @PostMapping("/posts")
@@ -54,15 +57,22 @@ public class PostRestController {
         String userId = userService.getProfile(authorization);
         postService.delete(postId, userId);
     }
+
     @PostMapping("/posts/{postId}")
     public void like(@PathVariable Long postId,
                      @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         String userId = userService.getProfile(authorization);
-        postService.like(postId,userId);
+        postService.like(postId, userId);
     }
+
     @GetMapping("/likedPosts/{loginId}") // user_id으로 좋아요한 게시글 조회
     public List<PostResponse> likedPostByUserId(@PathVariable String loginId) {
-       return postService.likedPostByUserId(loginId);
+        return postService.likedPostByUserId(loginId);
+    }
+
+    @GetMapping("/hashtagposts/{hashtagname}")
+    public PostListResponse findByHashTagName(@RequestParam(name = "hashtagname") String hashTagName) {
+        return postHashTagService.findByHashTagName(hashTagName);
     }
 
 }
