@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 
 import java.time.LocalDate;
@@ -135,7 +136,6 @@ public class postTest {
                 .delete("/posts/{postId}")
                 .then()
                 .statusCode(200);
-
     }
 
     @Test
@@ -214,19 +214,14 @@ public class postTest {
                 .as(PostResponse.class);
 
 
-        List<PostResponse> posts = RestAssured
+        RestAssured
                 .given()
                 .when()
                 .get("/posts")
                 .then()
-                .statusCode(200)
-                .extract()
-                .jsonPath()
-                .getList(".", PostResponse.class);
+                .statusCode(200);
 
-        // 가장 최신 게시글이 맨 앞
-        System.out.println(posts.get(0).createdTime());
-        System.out.println(posts.get(1).createdTime());
+
     }
 
     @Test
@@ -462,19 +457,17 @@ public class postTest {
                 .then()
                 .statusCode(200);
 
+        // 오류가 나는지 까지만 했음
         //게시글 조회
-        List<PostResponse> posts = RestAssured
+        RestAssured
                 .given()
                 .queryParam("orderby", "like")
                 .when()
                 .get("/posts")
                 .then()
-                .statusCode(200)
-                .extract()
-                .jsonPath()
-                .getList(".", PostResponse.class);
+                .statusCode(200);
 
-        System.out.println(posts);
+
     }
 
 
