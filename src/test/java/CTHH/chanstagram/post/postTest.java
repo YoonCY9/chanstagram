@@ -467,6 +467,15 @@ public class postTest {
                 .then()
                 .statusCode(200);
 
+        RestAssured
+                .given()
+                .queryParam("searchby", "like")
+                .when()
+                .get("/posts")
+                .then()
+                .statusCode(200);
+
+
 
     }
 
