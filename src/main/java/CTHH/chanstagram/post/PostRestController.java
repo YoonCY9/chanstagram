@@ -21,7 +21,9 @@ public class PostRestController {
     private final LoginMemberResolver loginMemberResolver;
     private final PostHashTagService postHashTagService;
 
+
     public PostRestController(PostService postService, LoginMemberResolver loginMemberResolver, PostHashTagService postHashTagService) {
+
         this.postService = postService;
         this.loginMemberResolver = loginMemberResolver;
         this.postHashTagService = postHashTagService;
@@ -40,25 +42,13 @@ public class PostRestController {
     }
 
     @GetMapping("/posts") // 모든 게시글 조회
-    public Page<PostResponse> findAll(
-            @RequestParam(defaultValue = "0") int page,
+    public List<PostResponse> findAll(
+            @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false, value = "orderby") String criteria) {
+            @RequestParam(required = false, value = "orderby") String criteria,
+            @RequestParam(required = false,value = "searchby") String keyword){
 
-        // http://localhost:8080/posts?page=0&size=5&orderby=like (예시)
-
-        Sort createdTime = Sort.by(Sort.Direction.DESC, "createdTime");
-        Pageable createdTimePage = PageRequest.of(page, size, createdTime);
-
-        Sort likeCount = Sort.by(Sort.Direction.DESC, "likeCount");
-        Pageable likeCountPage = PageRequest.of(page, size, likeCount);
-
-        if ("like".equals(criteria)) {
-            return postService.findAll(likeCountPage);
-        } else {
-            return postService.findAll(createdTimePage);
-        }
-
+        return postService.findAll(page,size,criteria,keyword);
     }
 
     @GetMapping("/posts/detailed/{postId}")

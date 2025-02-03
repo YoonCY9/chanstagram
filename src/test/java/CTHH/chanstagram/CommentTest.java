@@ -196,15 +196,23 @@ public class CommentTest {
                 .extract()
                 .as(PostResponse.class);
         //댓글 생성
-        RestAssured
+        CommentResponse commentResponse = RestAssured
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + loginResponse.token())
                 .contentType(ContentType.JSON)
-                .body(new CreateCommentRequest("댓글 삭제 테스트 중입니다.",postResponse.postId()))
+                .body(new CreateCommentRequest("댓글 삭제 테스트 중입니다.", postResponse.postId()))
                 .when()
                 .post("/comments")
                 .then().log().all()
-                .statusCode(200);
+                .statusCode(200)
+                .extract()
+                .as(CommentResponse.class);
+
+        System.out.println("============\n"+commentResponse.id());
+        System.out.println(commentResponse.content());
+        System.out.println(commentResponse.loginId());
+        System.out.println(commentResponse.postId());
+
         //댓글 삭제
         RestAssured
                 .given().log().all()

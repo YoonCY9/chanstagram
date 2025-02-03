@@ -1,6 +1,8 @@
 package CTHH.chanstagram.post;
 
 import CTHH.chanstagram.User.QUser;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
@@ -12,14 +14,14 @@ public class PostQueryRepository {
 
     private final JPAQueryFactory queryFactory;
     private final QPost post = QPost.post;
-    private final QLike like =QLike.like;
-    private final QUser user=QUser.user;
+    private final QLike like = QLike.like;
+    private final QUser user = QUser.user;
 
     public PostQueryRepository(JPAQueryFactory queryFactory) {
         this.queryFactory = queryFactory;
     }
 
-// user가 좋아요한 포스트만 filter하기
+    // user가 좋아요한 포스트만 filter하기
     public List<Post> getLikedPostsByUser(String loginId) {
         return queryFactory
                 .selectFrom(post)
@@ -28,8 +30,34 @@ public class PostQueryRepository {
                 .where(like.user.loginId.eq(loginId))
                 .fetch();
     }
-    //좋아요순으로 포스트정렬
 
+    public List<Post> findAll(int page, int size, String criteria, String keyword) {
+        return queryFactory
+                .selectFrom(post)
+                .where(findByKeyword(keyword))
+                .orderBy(findLikedPost(criteria))
+                .offset(size * (page - 1))
+                .limit(size)
+                .fetch();
+    }
 
+    private OrderSpecifier findLikedPost(String criteria) {
+        if (criteria == null||!criteria.equals("like")) {
+            return post.createdTime.desc();
+        }
+        return post.likeCount.desc();
+
+    }
+
+    private BooleanExpression findByKeyword(String keyword) {
+        if (keyword == null) {
+            return null;
+        }
+        return post.content.contains(keyword);
+    }
 
 }
+
+
+
+

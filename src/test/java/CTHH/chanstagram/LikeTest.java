@@ -349,11 +349,17 @@ public class LikeTest {
                 .then()
                 .statusCode(200);
 
+        //좋아요하기
+        RestAssured
+                .given().log().all()
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token1.token())
+                .pathParam("commentId", 1)
+                .when()
+                .post("/comments/{commentId}")
+                .then()
+                .statusCode(200);
+
 
     }
-
-
-
-
 }
 
