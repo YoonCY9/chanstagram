@@ -20,10 +20,7 @@ public class FollowService {
         this.userRepository = userRepository;
     }
 
-    public void follow(String followerName, String followeeName) {
-        User follower = userRepository.findByLoginId(followerName).orElseThrow(() ->
-                new NoSuchElementException("존재하지 않는 유저" + followerName));
-
+    public void follow(User follower, String followeeName) {
         User followee = userRepository.findByNickName(followeeName);
 
         if (follower.getNickName().equals(followee.getNickName())) {

@@ -60,30 +60,28 @@ public class UserService {
     }
 
     // 가입한 회원이 자신의 가입 정보를 조회하는 API
-    public String getProfile(String authorization) {
-        String[] tokenFormat = authorization.split(" ");
-        String tokenType = tokenFormat[0];
-        String token = tokenFormat[1];
-        // Bearer 토큰인지 검증
-        if (tokenType.equals("Bearer") == false) {
-            throw new IllegalArgumentException("로그인 정보가 유효하지 않습니다");
-        }
-        // 유효한 JWT 토큰인지 검증
-        if (jwtProvider.isValidToken(token) == false) {
-            throw new IllegalArgumentException("로그인 정보가 유효하지 않습니다");
-        }
-        // JWT 토큰에서 loginId 끄집어냄
-        String loginId = jwtProvider.getSubject(token);
-        return loginId;
-    }
+//    public String getProfile(String authorization) {
+//        String[] tokenFormat = authorization.split(" ");
+//        String tokenType = tokenFormat[0];
+//        String token = tokenFormat[1];
+//        // Bearer 토큰인지 검증
+//        if (tokenType.equals("Bearer") == false) {
+//            throw new IllegalArgumentException("로그인 정보가 유효하지 않습니다");
+//        }
+//        // 유효한 JWT 토큰인지 검증
+//        if (jwtProvider.isValidToken(token) == false) {
+//            throw new IllegalArgumentException("로그인 정보가 유효하지 않습니다");
+//        }
+//        // JWT 토큰에서 loginId 끄집어냄
+//        String loginId = jwtProvider.getSubject(token);
+//        return loginId;
+//    }
 
     //회원 탈퇴
     @Transactional
-    public void deleteUser(String loginId) {
-        User user = userRepository.findById(loginId).orElseThrow(
-                () -> new NoSuchElementException("로그인 정보가 유효하지 않습니다"));
-        commentRepository.deleteByUser_LoginId(loginId);
-        List<Post> postIdList = postRepository.findIdByUser_LoginId(loginId);
+    public void deleteUser(User user) {
+        commentRepository.deleteByUser_LoginId(user.getLoginId());
+        List<Post> postIdList = postRepository.findIdByUser_LoginId(user.getLoginId());
 
         for (Post post : postIdList) {
             commentRepository.deleteAllByPostId(post.getId());
@@ -94,9 +92,7 @@ public class UserService {
 
     //회원 수정
     @Transactional
-    public void updateUser(String loginId, UserRequest userRequest) {
-        User user = userRepository.findById(loginId).orElseThrow(
-                () -> new NoSuchElementException("로그인 정보가 유효하지 않습니다"));
+    public void updateUser(User user, UserRequest userRequest) {
         user.updateUserName(userRequest.userName());
         user.updateNickName(userRequest.nickName());
         user.updateGender(userRequest.gender());
@@ -105,5 +101,11 @@ public class UserService {
         user.updateProfileImage(userRequest.profileImage());
         user.updatePhoneNumber(userRequest.phoneNumber());
     }
+
+    public User findByLoginId(String loginId) {
+        return userRepository.findByLoginId(loginId).orElseThrow(
+                () -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+    }
+
 }
 

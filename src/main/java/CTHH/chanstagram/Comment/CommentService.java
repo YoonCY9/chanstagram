@@ -32,11 +32,9 @@ public class CommentService {
         this.postHashTagService = postHashTagService;
     }
 
-    public CommentResponse create(CreateCommentRequest request,String userId) {
+    public CommentResponse create(CreateCommentRequest request, User user) {
         Post post = postRepository.findById(request.postId())
                 .orElseThrow(() -> new NoSuchElementException("postId를 찾을 수 없습니다.:" + request.postId()));
-        User user = userRepository.findByLoginId(userId)
-                .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
         Comment comment = new Comment(request.content(), user, post);
         commentRepository.save(comment);
 
@@ -45,7 +43,7 @@ public class CommentService {
                 // 해시태그의 끝 위치 계산
                 int endIndex = comment.getContent().indexOf(" ", i);
                 if (endIndex == -1) {
-                    endIndex =comment.getContent().length();
+                    endIndex = comment.getContent().length();
                 }
 
                 // 해시태그 추출
@@ -67,25 +65,23 @@ public class CommentService {
             }
         }
         post.increaseCommentCount();
-        return new CommentResponse(comment.id,comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
+        return new CommentResponse(comment.id, comment.getContent(), comment.getPost().getId(), comment.getUser().getLoginId());
 
     }
+
     @Transactional
-    public CommentResponse update(Long commentId, UpdateCommentRequest request, String userId) {
-        User user = userRepository.findByLoginId(userId)
-                .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
+    public CommentResponse update(Long commentId, UpdateCommentRequest request, User user) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NoSuchElementException("commentId를 찾을 수 없습니다.:" + commentId));
         if (comment.getUser().equals(user)) {
             comment.updateContent(request.content());
         } else throw new RuntimeException("작성자가 일치하지 않습니다.");
 
-        return new CommentResponse(comment.id,comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
+        return new CommentResponse(comment.id, comment.getContent(), comment.getPost().getId(), comment.getUser().getLoginId());
     }
+
     @Transactional
-    public void deleteById(Long commentId, String userId) {
-        User user = userRepository.findByLoginId(userId)
-                .orElseThrow(() -> new NoSuchElementException("userId를 찾을 수 없습니다.:" + userId));
+    public void deleteById(Long commentId, User user) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NoSuchElementException("commentId를 찾을 수 없습니다.:" + commentId));
         if (comment.getUser().equals(user)) {
@@ -95,13 +91,11 @@ public class CommentService {
 
 
     @Transactional
-    public void like(Long commentId, String loginId) {
-        User user = userRepository.findByLoginId(loginId).orElseThrow(() ->
-                new NoSuchElementException("존재하지 않는 유저" + loginId));
+    public void like(Long commentId, User user) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저 게시글" + commentId));
 
-        Like like = likeRepository.findByUser_LoginIdAndComment_Id(loginId, commentId);
+        Like like = likeRepository.findByUser_LoginIdAndComment_Id(user.getLoginId(), commentId);
         if (like == null) {
             likeRepository.save(new Like(user, comment));
 

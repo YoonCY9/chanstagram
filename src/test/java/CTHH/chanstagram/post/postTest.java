@@ -66,18 +66,18 @@ public class postTest {
         List<String> imageUrl = List.of("https://example.com/image1.jpg111",
                 "https://example.com/image2.jpg");
 
-       PostResponse postResponse =
+        PostResponse postResponse =
                 RestAssured
-                .given()
-                .contentType(ContentType.JSON)
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.token())
-                .body(new CreatePost(imageUrl, "테스트입니다"))
-                .when()
-                .post("/posts")
-                .then()
-                .statusCode(200)
-                .extract()
-                .as(PostResponse.class);
+                        .given()
+                        .contentType(ContentType.JSON)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.token())
+                        .body(new CreatePost(imageUrl, "테스트입니다"))
+                        .when()
+                        .post("/posts")
+                        .then()
+                        .statusCode(200)
+                        .extract()
+                        .as(PostResponse.class);
     }
 
     @Test
@@ -122,19 +122,19 @@ public class postTest {
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.token())
                 .contentType(ContentType.JSON)
-                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.",postResponse.postId()))
+                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.", postResponse.postId()))
                 .when()
                 .post("/comments")
                 .then().log().all()
                 .statusCode(200);
 
         RestAssured
-                .given()
+                .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.token())
-                .pathParam("postId",postResponse.postId())
+                .pathParam("postId", postResponse.postId())
                 .when()
                 .delete("/posts/{postId}")
-                .then()
+                .then().log().all()
                 .statusCode(200);
     }
 
@@ -215,10 +215,10 @@ public class postTest {
 
 
         RestAssured
-                .given()
+                .given().log().all()
                 .when()
                 .get("/posts")
-                .then()
+                .then().log().all()
                 .statusCode(200);
 
 
@@ -267,7 +267,7 @@ public class postTest {
                 .given().log().all()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.token())
                 .contentType(ContentType.JSON)
-                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.",postResponse.postId()))
+                .body(new CreateCommentRequest("댓글 생성 테스트 중입니다.", postResponse.postId()))
                 .when()
                 .post("/comments")
                 .then().log().all()
@@ -281,6 +281,7 @@ public class postTest {
                 .then().log().all()
                 .statusCode(200);
     }
+
     @Test
     void likedpost전체조회() {
         //사람1 회원가입,로그인,사람1이 게시글생성
@@ -320,7 +321,6 @@ public class postTest {
                         .statusCode(200)
                         .extract()
                         .as(PostResponse.class);
-
 
 
         //사람2 회원가입, 로그인
@@ -424,7 +424,6 @@ public class postTest {
                         .as(PostResponse.class);
 
 
-
         //사람2 회원가입, 로그인
         RestAssured
                 .given().log().all()
@@ -469,7 +468,6 @@ public class postTest {
 
 
     }
-
 
 
 }

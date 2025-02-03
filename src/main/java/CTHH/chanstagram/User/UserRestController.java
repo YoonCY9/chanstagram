@@ -1,5 +1,6 @@
 package CTHH.chanstagram.User;
 
+import CTHH.chanstagram.LoginMemberResolver;
 import CTHH.chanstagram.User.DTO.*;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
@@ -9,9 +10,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserRestController {
 
     private final UserService userService;
+    private final LoginMemberResolver loginMemberResolver;
 
-    public UserRestController(UserService userService) {
+    public UserRestController(UserService userService, LoginMemberResolver loginMemberResolver) {
         this.userService = userService;
+        this.loginMemberResolver = loginMemberResolver;
     }
 
     //회원가입
@@ -29,15 +32,15 @@ public class UserRestController {
     //회원 탈퇴
     @DeleteMapping("/users")
     public void deleteUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        String userid = userService.getProfile(authorization);
-        userService.deleteUser(userid);
+        User user = loginMemberResolver.resolveUserFromToken(authorization);
+        userService.deleteUser(user);
     }
 
     //회원 수정
     @PutMapping("/users")
     public void updateUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                            @RequestBody UserRequest userRequest) {
-        String userid = userService.getProfile(authorization);
-        userService.updateUser(userid, userRequest);
+        User user = loginMemberResolver.resolveUserFromToken(authorization);
+        userService.updateUser(user, userRequest);
     }
 }
