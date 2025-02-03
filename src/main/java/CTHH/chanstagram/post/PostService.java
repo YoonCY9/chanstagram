@@ -42,10 +42,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponse create(CreatePost dto, String userName) {
-        User user = userRepository.findByLoginId(userName).orElseThrow(() ->
-                new NoSuchElementException("존재하지 않는 유저" + userName));
-
+    public PostResponse create(CreatePost dto, User user) {
         Post post = new Post(dto.content(), dto.imageUrl(), user);
 
         postRepository.save(post);
@@ -118,6 +115,7 @@ public class PostService {
                 p.getUpdatedTime(),
                 p.getLikeCount()
         )).toList();
+
     }
 
     public PostDetailedResponse findByPostId(Long postId) {
@@ -150,9 +148,7 @@ public class PostService {
     }
 
     @Transactional
-    public void update(Long postId, UpdatePost dto, String userName) {
-        User user = userRepository.findByLoginId(userName).orElseThrow();
-
+    public void update(Long postId, UpdatePost dto, User user) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 게시글" + postId));
 
@@ -164,25 +160,21 @@ public class PostService {
 
     @Transactional
     // 댓글 지우는 기능 나중에 추가해야함
-    public void delete(Long postId, String userName) {
-        User user = userRepository.findByLoginId(userName).orElseThrow();
-
+    public void delete(Long postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저 게시글" + postId));
-        if (post.getUser().getUserName().equals(user.getUserName())) {
+        if (post.getUser().equals(user)) {
             commentRepository.deleteAllByPostId(postId);
             postRepository.delete(post);
         }
     }
 
     @Transactional
-    public void like(Long postId, String loginId) {
-        User user = userRepository.findByLoginId(loginId).orElseThrow(() ->
-                new NoSuchElementException("존재하지 않는 유저" + loginId));
+    public void like(Long postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저 게시글" + postId));
 
-        Like like = likeRepository.findByUser_LoginIdAndPost_Id(loginId, postId);
+        Like like = likeRepository.findByUser_LoginIdAndPost_Id(user.getLoginId(), postId);
         if (like == null) {
             post.upLikeCount();
             likeRepository.save(new Like(user, post));
@@ -194,7 +186,7 @@ public class PostService {
     }
 
     @Transactional
-    public List<PostResponse> likedPostByUserId(String nickname){
+    public List<PostResponse> likedPostByUserId(String nickname) {
         User byNickName = userRepository.findByNickName(nickname);
         List<Post> likedPostsByUser = postQueryRepository.getLikedPostsByUser(byNickName.getLoginId());
 

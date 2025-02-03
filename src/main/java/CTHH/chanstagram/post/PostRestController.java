@@ -1,6 +1,7 @@
 package CTHH.chanstagram.post;
 
-import CTHH.chanstagram.User.UserService;
+import CTHH.chanstagram.LoginMemberResolver;
+import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.post.DTO.*;
 
 import CTHH.chanstagram.post.postHashTag.PostHashTagService;
@@ -17,20 +18,22 @@ import java.util.List;
 public class PostRestController {
 
     private final PostService postService;
-    private final UserService userService;
+    private final LoginMemberResolver loginMemberResolver;
     private final PostHashTagService postHashTagService;
 
-    public PostRestController(PostService postService, UserService userService, PostHashTagService postHashTagService, PostQueryRepository postQueryRepository) {
+
+    public PostRestController(PostService postService, LoginMemberResolver loginMemberResolver, PostHashTagService postHashTagService) {
+
         this.postService = postService;
-        this.userService = userService;
+        this.loginMemberResolver = loginMemberResolver;
         this.postHashTagService = postHashTagService;
     }
 
     @PostMapping("/posts")
     public PostResponse create(@RequestBody CreatePost post,
                                @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        String userId = userService.getProfile(authorization);
-        return postService.create(post, userId);
+        User user = loginMemberResolver.resolveUserFromToken(authorization);
+        return postService.create(post, user);
     }
 
     @GetMapping("/posts/{nickName}") // 닉네임으로 게시글 조회
@@ -57,22 +60,22 @@ public class PostRestController {
     public void update(@PathVariable Long postId,
                        @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
                        @RequestBody UpdatePost post) {
-        String userId = userService.getProfile(authorization);
-        postService.update(postId, post, userId);
+        User user = loginMemberResolver.resolveUserFromToken(authorization);
+        postService.update(postId, post, user);
     }
 
     @DeleteMapping("/posts/{postId}")
     public void delete(@PathVariable Long postId,
                        @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        String userId = userService.getProfile(authorization);
-        postService.delete(postId, userId);
+        User user = loginMemberResolver.resolveUserFromToken(authorization);
+        postService.delete(postId, user);
     }
 
     @PostMapping("/posts/{postId}")
     public void like(@PathVariable Long postId,
                      @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
-        String userId = userService.getProfile(authorization);
-        postService.like(postId, userId);
+        User user = loginMemberResolver.resolveUserFromToken(authorization);
+        postService.like(postId, user);
     }
 
     @GetMapping("/likedPosts/{nickname}") // user_id으로 좋아요한 게시글 조회
@@ -83,7 +86,6 @@ public class PostRestController {
     @GetMapping("/hashtagposts/{hashtagname}")
     public PostListResponse findByHashTagName(@PathVariable(name = "hashtagname") String hashTagName) {
         return postHashTagService.findByHashTagName(hashTagName);
-
     }
 
 }
