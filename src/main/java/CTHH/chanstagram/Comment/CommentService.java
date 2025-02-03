@@ -67,7 +67,7 @@ public class CommentService {
             }
         }
         post.increaseCommentCount();
-        return new CommentResponse(comment.id,comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
+        return new CommentResponse(comment.getId(),comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
 
     }
     @Transactional
@@ -80,7 +80,7 @@ public class CommentService {
             comment.updateContent(request.content());
         } else throw new RuntimeException("작성자가 일치하지 않습니다.");
 
-        return new CommentResponse(comment.id,comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
+        return new CommentResponse(comment.getId(),comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
     }
     @Transactional
     public void deleteById(Long commentId, String userId) {
@@ -95,7 +95,7 @@ public class CommentService {
 
 
     @Transactional
-    public void like(Long commentId, String loginId) {
+    public CommentResponse like(Long commentId, String loginId) {
         User user = userRepository.findByLoginId(loginId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저" + loginId));
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
@@ -108,5 +108,6 @@ public class CommentService {
         } else {
             likeRepository.delete(like);
         }
+        return new CommentResponse(comment.getId(),comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
     }
 }

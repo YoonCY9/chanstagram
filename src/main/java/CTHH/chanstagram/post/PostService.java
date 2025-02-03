@@ -81,8 +81,6 @@ public class PostService {
 
             }
         }
-
-
         return new PostResponse(
                 post.getId(),
                 post.getContent(),
@@ -108,8 +106,8 @@ public class PostService {
                 )).toList();
     }
 
-    public Page<PostResponse> findAll(Pageable pageable) { // 게시글 전체조회
-        return postRepository.findAll(pageable)
+    public List<PostResponse> findAll(int page,int size,String criteria,String keyword) { // 게시글 전체조회
+        return postQueryRepository.findAll(page,size,criteria,keyword).stream()
                 .map(p -> new PostResponse(
                 p.getId(),
                 p.getContent(),
@@ -119,7 +117,7 @@ public class PostService {
                 p.getCreatedTime(),
                 p.getUpdatedTime(),
                 p.getLikeCount()
-        ));
+        )).toList();
     }
 
     public PostDetailedResponse findByPostId(Long postId) {

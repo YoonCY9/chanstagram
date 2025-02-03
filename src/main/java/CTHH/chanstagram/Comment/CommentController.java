@@ -38,9 +38,9 @@ public class CommentController {
     }
     //댓글좋아요
     @PostMapping("/comments/{commentId}")
-    public void like(@PathVariable Long commentId,
+    public CommentResponse like(@PathVariable Long commentId,
                      @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
         String userId = userService.getProfile(authorization);
-        service.like(commentId, userId);
+        return service.like(commentId, userId);
     }
 }
