@@ -96,9 +96,7 @@ public class CommentService {
 
     @Transactional
 
-    public CommentResponse like(Long commentId, String loginId) {
-        User user = userRepository.findByLoginId(loginId).orElseThrow(() ->
-                new NoSuchElementException("존재하지 않는 유저" + loginId));
+    public CommentResponse like(Long commentId, User user) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저 게시글" + commentId));
