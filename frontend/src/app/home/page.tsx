@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import {useRouter} from "next/navigation";
 
 interface IUser {
     imageUrls: string[]; // 게시물 이미지 배열
@@ -14,6 +15,7 @@ interface IUser {
 const Home = () => {
     const [users, setUsers] = useState<IUser[]>([]); // 초기 상태를 빈 배열로 설정
     const [loading, setLoading] = useState(true); // 로딩 상태
+    const router = useRouter();
 
     // 백엔드에서 데이터를 가져오는 함수
     const fetchPosts = async () => {
@@ -32,7 +34,7 @@ const Home = () => {
             // 백엔드 데이터를 React의 상태로 변환
             const formattedData = data.map((post: any) => ({
                 imageUrls: post.imageUrl, // List<String> 형태
-                nickName: post.user.username, // UserResponse에서 사용자 이름
+                nickName: post.user.nickName, // UserResponse에서 사용자 이름
                 likeCount: post.likeCount || 0, // 좋아요 수
                 isLiked: false, // 기본값
                 profileImage: post.user.profileImage || "", // 사용자 프로필 이미지
@@ -86,14 +88,14 @@ const Home = () => {
                     {users.map((user, index) => (
                         <div key={index} className="bg-white rounded-xl shadow-md overflow-hidden">
                             {/* 프로필 */}
-                            <div className="flex items-center p-6">
+                            <button onClick={() => router.push("/profile")} className="flex items-center p-6">
                                 <img
                                     src={user.profileImage}
                                     alt={`${user.nickName} profile`}
                                     className="w-10 h-10 rounded-full object-cover"
                                 />
                                 <span className="ml-4 font-semibold">{user.nickName}</span>
-                            </div>
+                            </button>
 
                             {/* 게시물 이미지 */}
                             <div className="flex overflow-x-scroll space-x-2">
