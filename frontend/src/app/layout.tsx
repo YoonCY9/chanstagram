@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Underbar from "@/app/search/Underbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,27 +19,27 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
+                                       children,
+                                   }: Readonly<{
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    return (
+        <html lang="en">
+        <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
         {/* 화면을 전체적으로 덮고 중앙 정렬하는 div */}
         <div className="bg-stone-400 w-screen h-screen flex justify-center items-center">
-          {/* 너비 480px, 세로 정렬, 높이 전체로 확장 */}
-          <div className="bg-white w-[480px] h-screen flex flex-col">
-            {/* 스크롤이 적용될 영역 (흰색 박스 안에서만 스크롤 가능) */}
-            <div className="flex-1 overflow-auto p-4 pb-12">{children}</div>
+            {/* 너비 480px, 세로 정렬, 높이 전체로 확장 */}
+            <div className="bg-white w-[480px] h-screen flex flex-col relative">
+                {/* 스크롤이 적용될 영역 */}
+                <div className="flex-1 overflow-auto p-4 pb-16">{children}</div>
 
-            {/* 하단 고정 바 (추후 언더바 추가) */}
-            <div className="h-12 bg-gray-200 fixed bottom-0 w-[480px]"></div>
-          </div>
+                {/* 하단바 추가 (기존 회색 바 제거) */}
+                <Underbar />
+            </div>
         </div>
-      </body>
-    </html>
-  );
+        </body>
+        </html>
+    );
 }
