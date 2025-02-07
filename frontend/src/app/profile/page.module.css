@@ -1,0 +1,8 @@
+.problem4 {
+    display: flex;
+    flex-direction: column;
+    background-color: aquamarine;
+  }
+  .problem4 .item:nth-child(3){
+    align-items: flex-end
+  }
