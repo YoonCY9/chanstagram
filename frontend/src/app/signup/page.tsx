@@ -8,7 +8,7 @@ export default function SignupPage() {
         userName: "",
         nickName: "",
         loginId: "",
-        password: "",
+        password:"",
         birth: "",
         content: "",
         profileImage: "",

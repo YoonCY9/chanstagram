@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import {useEffect, useState} from "react";
+import {useRouter} from "next/navigation";
 
 
 interface UserResponse {
@@ -26,10 +26,15 @@ interface PostDetailedResponse {
     likeCount: number;
 }
 
-export default function PostDetailPage({ params }: { params: { postId: string } }) {
+export default function PostDetailPage({params}: { params: { postId: string } }) {
     const [post, setPost] = useState<PostDetailedResponse | null>(null);
     const router = useRouter();
 
+    const [liked, setLiked] = useState(false);
+
+    const toggleLike = () => {
+        setLiked(!liked); // 상태 토글
+    }
     useEffect(() => {
         // ⚡️ 임시 데이터 (Mock Data)
         const mockPost: PostDetailedResponse = {
@@ -70,16 +75,18 @@ export default function PostDetailPage({ params }: { params: { postId: string } 
             {/* 상단 바 */}
             <div className="flex items-center justify-between p-4 border-b bg-white shadow-sm">
                 {/* 홈으로 가는 버튼 */}
-                <button onClick={() => router.push("/")} className="text-3xl font-bold" style={{ fontFamily: "'Billabong', cursive" }}>
+                <button onClick={() => router.push("/home")} className="text-3xl font-bold"
+                        style={{fontFamily: "'Billabong', cursive"}}>
                     Chanstagram
                 </button>
             </div>
 
             {/* 게시글 작성자 정보 */}
             <div className="flex items-center p-4 border-b">
-                <img src={post.user.profileImage} alt="프로필 이미지" className="w-12 h-12 rounded-full mr-3" />
+                <img src={post.user.profileImage} alt="프로필 이미지" className="w-12 h-12 rounded-full mr-3"/>
                 <div>
-                    <p className="font-semibold">{post.user.nickName}</p>
+                    <button onClick={() => router.push("/profile")}
+                            className="font-semibold">{post.user.nickName}</button>
                     <p className="text-gray-500 text-sm">{new Date(post.createdTime).toLocaleString()}</p>
                 </div>
             </div>
@@ -88,7 +95,7 @@ export default function PostDetailPage({ params }: { params: { postId: string } 
             {post.imageUrl.length > 0 && (
                 <div className="w-full bg-black">
                     {post.imageUrl.map((url, index) => (
-                        <img key={index} src={url} alt="게시글 이미지" className="w-full object-cover max-h-[500px]" />
+                        <img key={index} src={url} alt="게시글 이미지" className="w-full object-cover max-h-[500px]"/>
                     ))}
                 </div>
             )}
@@ -100,8 +107,34 @@ export default function PostDetailPage({ params }: { params: { postId: string } 
 
             {/* 좋아요 및 댓글 수 */}
             <div className="p-4 flex justify-between border-t">
-                <p className="font-semibold">❤️ {post.likeCount} 좋아요</p>
-                <p className="font-semibold">💬 {post.commentCount} 댓글</p>
+                <button onClick={() => setLiked(!liked)} className="text-3xl">
+                    {liked ? (
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="red"
+                            className="w-8 h-8 transition duration-300 ease-in-out"
+                        >
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    ) : (
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="black"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-8 h-8 transition duration-300 ease-in-out"
+                        >
+                            <path
+                                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    )}
+                </button>
+                <div className="font-semibold">💬 {post.commentCount} 댓글</div>
             </div>
 
             {/* 댓글 리스트 */}
@@ -110,9 +143,9 @@ export default function PostDetailPage({ params }: { params: { postId: string } 
                 {post.comments.length > 0 ? (
                     post.comments.map((comment) => (
                         <div key={comment.id} className="flex items-start space-x-3 mb-3">
-                            <img src={comment.nickName.profileImage} alt="프로필" className="w-8 h-8 rounded-full" />
+                            <img src={comment.nickName.profileImage} alt="프로필" className="w-8 h-8 rounded-full"/>
                             <div className="bg-gray-100 p-2 rounded-xl">
-                                <p className="font-bold">{comment.nickName.nickName}</p>
+                                <button className="font-bold">{comment.nickName.nickName}</button>
                                 <p className="text-gray-700">{comment.content}</p>
                             </div>
                         </div>
