@@ -37,7 +37,7 @@ public class UserService {
                 userDetailRequest.gender(),
                 userDetailRequest.birth(),
                 userDetailRequest.content(),
-                userDetailRequest.profileImage(),
+                "https://png.pngtree.com/png-clipart/20220112/ourmid/pngtree-cartoon-hand-drawn-default-avatar-png-image_4154232.png",
                 userDetailRequest.phoneNumber());
         userRepository.save(user);
         return new UserDetailResponse(user.getUserName(),

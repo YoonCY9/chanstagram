@@ -61,7 +61,7 @@ export default function SignupPage() {
             <div className="bg-white p-10 rounded-2xl shadow-xl w-[450px] max-w-md">
 
 
-            <h1 className="text-5xl font-bold text-center mb-6 text-gray-800"
+                <h1 className="text-5xl font-bold text-center mb-6 text-gray-800"
                     style={{fontFamily: "'Billabong', cursive"}}>
                     Chanstagram
                 </h1>
