@@ -13,7 +13,7 @@ export default function SignupPage() {
         content: "",
         profileImage: "",
         phoneNumber: "",
-        gender: "",
+        gender: ""
     });
 
     const router = useRouter();
@@ -32,8 +32,8 @@ export default function SignupPage() {
             const formattedData = {
                 ...formData,
                 birth: formData.birth ? new Date(`${formData.birth}T00:00:00`).toISOString().split("T")[0] : null,
-                gender: formData.gender === "남성" ? "Man" : "Woman",
             };
+
 
             const response = await fetch("http://localhost:8080/users", {
                 method: "POST",
