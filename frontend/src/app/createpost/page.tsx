@@ -10,6 +10,17 @@ export default function creatPost() {
         });
     const router = useRouter();
 
+    const getCookie = (name: string): string | null => {
+        const cookies = document.cookie.split("; "); // 쿠키를 세미콜론으로 분리
+        for (const cookie of cookies) {
+            const [key, value] = cookie.split("="); // key=value 형태 분리
+            if (key === name) {
+                return value;
+            }
+        }
+        return null;
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setPostData({
             ...postData,
@@ -29,12 +40,20 @@ export default function creatPost() {
     };
 
     const handleUpload = async () => {
+        // 쿠키에서 토큰 가져오기
+        const token = getCookie("token");
+        if (!token) {
+            alert("로그인이 필요합니다.");
+            router.push("/login"); // 토큰이 없으면 로그인 페이지로 리다이렉트
+            return;
+        }
+
         try {
             const response = await fetch("http://localhost:8080/posts", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: "Bearer YOUR_ACCESS_TOKEN", // 토큰이 필요하다면 추가
+                    Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 추가
                 },
                 body: JSON.stringify(postData), // JSON 형태로 전송
             });
@@ -50,6 +69,7 @@ export default function creatPost() {
             alert("업로드 중 문제가 발생했습니다.");
         }
     };
+
 
 
     return (

@@ -28,7 +28,10 @@ export default function LoginPage() {
             });
 
             if (response.ok) {
-                const data = await response.json();
+                const { token } = await response.json(); // 서버에서 반환된 토큰 가져오기
+
+                // 클라이언트에서 쿠키 저장
+                document.cookie = `token=${token}; path=/; max-age=3600; Secure`;
                 alert("로그인 성공!");
 
                 // 로그인 후 홈으로 이동
