@@ -17,12 +17,12 @@ const Home = () => {
     const [loading, setLoading] = useState(true); // 로딩 상태
     const router = useRouter();
 
-    useEffect(() => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-            router.push("/login"); // 로그인 페이지로 리디렉션
-        }
-    }, [router]);
+    // useEffect(() => {
+    //     const token = localStorage.getItem("token");
+    //     if (!token) {
+    //         router.push("/login"); // 로그인 페이지로 리디렉션
+    //     }
+    // }, [router]);
 
     // 백엔드에서 데이터를 가져오는 함수
     const fetchPosts = async () => {
