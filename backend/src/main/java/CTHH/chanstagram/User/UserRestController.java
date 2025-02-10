@@ -43,4 +43,11 @@ public class UserRestController {
         User user = loginMemberResolver.resolveUserFromToken(authorization);
         userService.updateUser(user, userRequest);
     }
+
+    //내 프로필 조회
+    @GetMapping("/me")
+    public UserDetailResponse getUserInfo(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization) {
+        User user = loginMemberResolver.resolveUserFromToken(authorization);
+        return userService.getUserInfo(user);
+    }
 }
