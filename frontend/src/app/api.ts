@@ -31,7 +31,7 @@ export async function fetchProfile(): Promise<Profile | undefined> {
         }
 
         const response = await fetch('http://localhost:8080/me', {
-            method: 'GET',
+            // method: 'GET',
             headers: {
                 Authorization: token,
             },
