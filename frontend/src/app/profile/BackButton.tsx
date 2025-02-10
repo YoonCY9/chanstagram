@@ -2,8 +2,8 @@
 
 import { useRouter } from 'next/navigation'
 
-const BackButton: React.FC = () => {
-  const router = useRouter()
+export default function BackButton(){
+      const router = useRouter()
 
   const handleGoBack = () => {
     router.back()
@@ -21,5 +21,3 @@ const BackButton: React.FC = () => {
     </button>
   )
 }
-
-export default BackButton
