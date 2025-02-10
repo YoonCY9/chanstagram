@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {logIn} from "@/app/login";
 
 export default function LoginPage() {
     const [formData, setFormData] = useState({ loginId: "", password: "" });
@@ -55,7 +56,7 @@ export default function LoginPage() {
                     </h1> {/* Instagram 스타일 폰트 */}
                     <h1 className="text-2xl font-bold text-gray-700">로그인</h1>
                 </div>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} action={logIn} className="space-y-4">
                     <input
                         type="text"
                         name="loginId"

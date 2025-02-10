@@ -107,5 +107,17 @@ public class UserService {
                 () -> new NoSuchElementException("회원을 찾을 수 없습니다."));
     }
 
+    public UserDetailResponse getUserInfo(User user) {
+        return new UserDetailResponse(
+                user.getUserName(),
+                user.getNickName(),
+                user.getLoginId(),
+                user.getPassword(),
+                user.getGender(),
+                user.getBirth(),
+                user.getContent(),
+                user.getProfileImage(),
+                user.getPhoneNumber());
+    }
 }
 
