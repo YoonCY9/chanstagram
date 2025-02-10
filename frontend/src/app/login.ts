@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { signIn } from './api';
 import { redirect } from 'next/navigation';
 
-export async function login() {
+export async function logIn() {
     const token = await signIn();
 
     const cookieStore = await cookies();

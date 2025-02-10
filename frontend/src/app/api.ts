@@ -11,7 +11,7 @@ interface LoginRequest {
 
 export async function signIn({loginId, password}: LoginRequest): Promise<string> {
 
-    const response = await fetch('http://localhost:8000/login', {
+    const response = await fetch('http://localhost:8080/login', {
         method: 'POST',
         body: JSON.stringify({loginId, password}),
         headers: {'Content-Type': 'application/json'},
@@ -30,13 +30,14 @@ export async function fetchProfile(): Promise<Profile | undefined> {
             return undefined;
         }
 
-        const response = await fetch('http://localhost:3000/me', {
-          headers: {
-            Authorization: token,
-          },
+        const response = await fetch('http://localhost:8080/me', {
+            method: 'GET',
+            headers: {
+                Authorization: token,
+            },
         });
         if (!response.ok) {
-          throw new Error(`Failed to fetch profile: ${response.statusText}`);
+            throw new Error(`Failed to fetch profile: ${response.statusText}`);
         }
 
         return await response.json();
