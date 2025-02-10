@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 
 interface IUser {
@@ -16,6 +16,13 @@ const Home = () => {
     const [users, setUsers] = useState<IUser[]>([]); // 초기 상태를 빈 배열로 설정
     const [loading, setLoading] = useState(true); // 로딩 상태
     const router = useRouter();
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            router.push("/login"); // 로그인 페이지로 리디렉션
+        }
+    }, [router]);
 
     // 백엔드에서 데이터를 가져오는 함수
     const fetchPosts = async () => {
@@ -78,6 +85,26 @@ const Home = () => {
             <header className="flex items-center justify-between px-4 py-2 bg-white shadow-md">
                 <button onClick={() => window.location.reload()} className="text-xl font-bold">
                     Chanstagram
+                </button>
+                {/* 돋보기 버튼 */}
+                <button
+                    onClick={() => router.push("/search")}
+                    className="text-gray-500 hover:text-gray-800 transition-colors"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2}
+                        stroke="currentColor"
+                        className="w-6 h-6"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z"
+                        />
+                    </svg>
                 </button>
             </header>
 
