@@ -75,10 +75,6 @@ const Home = () => {
         );
     };
 
-    if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading...</div>;
-    }
-
     return (
         <div className="flex flex-col h-screen w-full max-w-md mx-auto bg-gray-100">
             {/* 헤더 */}
