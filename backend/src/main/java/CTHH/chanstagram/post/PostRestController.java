@@ -1,5 +1,6 @@
 package CTHH.chanstagram.post;
 
+import CTHH.chanstagram.Comment.CommentListResponse;
 import CTHH.chanstagram.LoginMemberResolver;
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.post.DTO.*;
@@ -46,9 +47,9 @@ public class PostRestController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false, value = "orderby") String criteria,
-            @RequestParam(required = false,value = "searchby") String keyword){
+            @RequestParam(required = false, value = "searchby") String keyword) {
 
-        return postService.findAll(page,size,criteria,keyword);
+        return postService.findAll(page, size, criteria, keyword);
     }
 
     @GetMapping("/posts/detailed/{postId}")
@@ -86,6 +87,11 @@ public class PostRestController {
     @GetMapping("/hashtagposts/{hashtagname}")
     public PostListResponse findByHashTagName(@PathVariable(name = "hashtagname") String hashTagName) {
         return postHashTagService.findByHashTagName(hashTagName);
+    }
+
+    @GetMapping("/comments/{postId}")
+    public CommentListResponse findByPostIdComments(@PathVariable Long postId) {
+        return postService.findByPostIdComments(postId);
     }
 
 }
