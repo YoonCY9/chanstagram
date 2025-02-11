@@ -13,17 +13,6 @@ export default function createPost() {
 
   const [imgUploading, setImgUploading] = useState(false);
 
-  const getCookie = (name: string): string | null => {
-    const cookies = document.cookie.split("; "); // 쿠키를 세미콜론으로 분리
-    for (const cookie of cookies) {
-      const [key, value] = cookie.split("="); // key=value 형태 분리
-      if (key === name) {
-        return value;
-      }
-    }
-    return null;
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPostData({
       ...postData,
@@ -59,27 +48,23 @@ export default function createPost() {
   };
 
   const handleUpload = async () => {
-    // 쿠키에서 토큰 가져오기
-    const token = getCookie("token");
-    if (!token) {
-      alert("로그인이 필요합니다.");
-      router.push("/login"); // 토큰이 없으면 로그인 페이지로 리다이렉트
-      return;
-    }
-
     try {
       const response = await fetch("http://localhost:8080/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`, // Authorization 헤더에 토큰 추가
         },
-        body: JSON.stringify(postData), // JSON 형태로 전송
+        credentials: "include", // 쿠키 자동 포함
+        body: JSON.stringify(postData),
       });
 
       if (response.ok) {
         alert("업로드 성공");
         router.push("/home");
+      } else if (response.status === 401) {
+        // 인증 실패 시 처리
+        alert("로그인이 필요합니다.");
+        router.push("/login");
       } else {
         alert("업로드 실패");
       }
@@ -110,13 +95,23 @@ export default function createPost() {
           />
         </form>
         <form className="p-6 border border-gray-600">
-          <input type="file" accept="image/*" onChange={handleFileChange} />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            disabled={imgUploading} // 업로드 중이면 입력 비활성화
+            className={`${imgUploading ? "opacity-50 cursor-not-allowed" : ""}`}
+          />
+          {imgUploading && <p className="text-blue-500">이미지 업로드 중...</p>}
         </form>
         <button
           onClick={handleUpload}
-          className="mt-4 flex items-center gap-2 px-4 py-2 bg-blue-500 text-white shadow-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 transition"
+          disabled={imgUploading} // 업로드 중이면 버튼 비활성화
+          className={`mt-4 flex items-center gap-2 px-4 py-2 bg-blue-500 text-white shadow-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 transition ${
+            imgUploading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
         >
-          업로드
+          {imgUploading ? "업로드 중..." : "업로드"}
         </button>
       </div>
     </>
