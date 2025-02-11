@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import Underbar from "./Underbar"
+import Underbar from "./Underbar";
 
 interface Post {
   content: string;
@@ -276,7 +276,6 @@ export default function Page({
     <div className="h-screen flex flex-col">
       <Navigator setSearchQuery={setSearchQuery} />
       <Feed posts={dummyPosts} searchQuery={searchQuery} />
-      <Underbar/>
     </div>
   );
 }

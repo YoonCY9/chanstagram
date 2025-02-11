@@ -26,22 +26,29 @@ export interface PostsByNickName {
 const apiBaseUrl = `http://localhost:8080`;
 
 // 게시물 데이터를 가져오는 함수
-async function fetchPostsByNickName(nickname: string): Promise<PostsByNickName[]> {
+async function fetchPostsByNickName(
+  nickname: string,
+): Promise<PostsByNickName[]> {
   const response = await fetch(`${apiBaseUrl}/posts/${nickname}`);
   if (!response.ok) {
-    throw new Error('게시물을 가져오는 데 실패했습니다.');
+    throw new Error("게시물을 가져오는 데 실패했습니다.");
   }
-  return response.json();
+  const data = await response.json();
+  return data;
 }
 
-export default function ProfilePage({ params }: { params: { nickname: string } }) {
+export default function ProfilePage({
+  params,
+}: {
+  params: { nickName: string };
+}) {
   const [userDetail, setUserDetail] = useState<UserResponse | null>(null);
   const [posts, setPosts] = useState<PostsByNickName[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const nickname = params.nickname;
+    const nickname = params.nickName;
 
     const fetchData = async () => {
       try {
@@ -63,19 +70,19 @@ export default function ProfilePage({ params }: { params: { nickname: string } }
     };
 
     fetchData();
-  }, [params.nickname]);
+  }, [params.nickName]);
 
-  if (isLoading) return <div>로딩 중...</div>;
-  if (error) return <div>오류: {error}</div>;
-  if (posts.length === 0) return <div>게시물이 없습니다.</div>;
+  // if (isLoading) return <div>로딩 중...</div>;
+  // if (error) return <div>오류: {error}</div>;
+  // if (posts.length === 0) return <div>게시물이 없습니다.</div>;
 
   return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <BackButton />
-        {userDetail && <ProfileHeader userDetail={userDetail} />}
-        <ProfileInfo postCount={posts.length} />
-        <ProfileTabs />
-        <ProfilePosts posts={posts} />
-      </div>
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <BackButton />
+      {userDetail && <ProfileHeader userDetail={userDetail} />}
+      <ProfileInfo postCount={posts.length} />
+      <ProfileTabs />
+      <ProfilePosts posts={posts} />
+    </div>
   );
 }
