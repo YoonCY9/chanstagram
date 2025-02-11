@@ -2,6 +2,7 @@
 
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
+import Link from "next/link";
 
 interface IUser {
     imageUrls: string[]; // 게시물 이미지 배열
@@ -10,6 +11,7 @@ interface IUser {
     isLiked: boolean;
     profileImage: string;
     content: string;
+    postId: number;
 }
 
 const Home = () => {
@@ -46,6 +48,7 @@ const Home = () => {
                 isLiked: false, // 기본값
                 profileImage: post.user.profileImage || "", // 사용자 프로필 이미지
                 content: post.content, // 게시물 내용
+                postId: post.postId,
             }));
             setUsers(formattedData); // 상태 업데이트
         } catch (error) {
@@ -164,7 +167,10 @@ const Home = () => {
                             {/* 좋아요/댓글 수 */}
                             <div className="px-4 py-2">
                                 <p className="text-sm font-semibold">좋아요 {user.likeCount}개</p>
-                                <p className="text-sm text-gray-600">댓글 보기</p>
+
+                                <Link href={`/comments/${user.postId}`}>
+                                    <p className="text-sm text-gray-600">댓글 보기</p>
+                                    </Link>
                             </div>
                         </div>
                     ))}
