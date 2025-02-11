@@ -9,16 +9,24 @@ interface LoginRequest {
     password: string;
 }
 
-export async function signIn({loginId, password}: LoginRequest): Promise<string> {
+export async function signIn(loginIdAndPassword: LoginRequest): Promise<string> {
 
     const response = await fetch('http://localhost:8080/login', {
         method: 'POST',
-        body: JSON.stringify({loginId, password}),
+        body: JSON.stringify({
+            loginId: loginIdAndPassword.loginId,
+            password: loginIdAndPassword.password
+        }),
         headers: {'Content-Type': 'application/json'},
     });
 
-    const token = await response.json();
-    return token;
+    if (!response.ok) {
+        throw new Error(response.statusText);
+    }
+
+    const loginResponse = await response.json();
+
+    return loginResponse.token;
 }
 
 export async function fetchProfile(): Promise<Profile | undefined> {
