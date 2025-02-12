@@ -15,37 +15,39 @@ export default function LikeButton({
   token,
 }: LikeButtonProps) {
   const [likeCount, setLikeCount] = useState(initialLikeCount);
+  // liked 상태는 백엔드의 토글 로직과는 별개로, 프론트엔드에서 현재 상태를 표시하기 위해 사용합니다.
   const [liked, setLiked] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleLike = async () => {
-    // 이미 좋아요를 눌렀다면 추가 요청을 막을 수 있습니다.
-    if (liked) return;
-
+  const handleToggle = async () => {
     setLoading(true);
     try {
+      // 단일 엔드포인트 호출 (좋아요 / 언라이크 모두 처리)
       const response = await fetch(
         `http://localhost:8080/comments/${commentId}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            // 실제 인증 토큰으로 변경하세요.
             Authorization: "Bearer " + token,
           },
         },
       );
 
       if (!response.ok) {
-        throw new Error("Failed to like comment");
+        throw new Error("Failed to toggle like comment");
       }
 
-      // 백엔드에서 반환하는 CommentResponse DTO 사용 (여기서는 likeCount 만 사용)
+      // 백엔드에서 반환된 CommentResponse DTO의 likeCount 사용
       const data = await response.json();
+
+      // 응답에 따른 좋아요 수 업데이트
       setLikeCount(data.likeCount);
-      setLiked(true);
+
+      // 현재 상태에 관계없이 토글 (만약 좋아요 상태였다면 좋아요 취소, 아니면 좋아요 등록)
+      setLiked((prev) => !prev);
     } catch (error) {
-      console.error("Error liking comment:", error);
+      console.error("Error toggling like status:", error);
     } finally {
       setLoading(false);
     }
@@ -53,12 +55,12 @@ export default function LikeButton({
 
   return (
     <button
-      onClick={handleLike}
-      disabled={loading || liked}
+      onClick={handleToggle}
+      disabled={loading}
       className="flex items-center space-x-1 focus:outline-none"
     >
       {liked ? (
-        // 채워진 하트 아이콘 (좋아요를 누른 상태)
+        // 채워진 하트 아이콘 (좋아요 상태)
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6 text-red-500"
@@ -68,7 +70,7 @@ export default function LikeButton({
           <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
         </svg>
       ) : (
-        // 비어있는 하트 아이콘 (아직 좋아요를 누르지 않은 상태)
+        // 비어있는 하트 아이콘 (좋아요 상태가 아님)
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6 text-gray-500"

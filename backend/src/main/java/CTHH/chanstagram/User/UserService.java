@@ -128,5 +128,12 @@ public class UserService {
         boolean follow = followRepository.existsByFollowerAndFollowee(me, byNickName);
         return new UserfollowResponse(byNickName.getNickName(), byNickName.getProfileImage(),follow);
     }
+
+    public UserResponse getUserInfoByloginId(String loginId) {
+        User user = userRepository.findByLoginId(loginId).orElseThrow(
+                () -> new NoSuchElementException("해당하는 유저가 없습니다.")
+        );
+        return new UserResponse(user.getNickName(), user.getProfileImage());
+    }
 }
 

@@ -56,5 +56,10 @@ public class UserRestController {
         User me = loginMemberResolver.resolveUserFromToken(authorization);
         return userService.getUserInfoByNickname(nickName,me);
     }
+
+    @GetMapping("/users/{loginId}")
+    public UserResponse getUserInfoByloginId(@PathVariable String loginId) {
+        return userService.getUserInfoByloginId(loginId);
+    }
 }
 
