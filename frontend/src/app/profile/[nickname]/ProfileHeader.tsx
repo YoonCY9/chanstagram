@@ -14,13 +14,15 @@ interface ProfileHeaderProps {
 
 export default function ProfileHeader({ userDetail }: ProfileHeaderProps) {
   const [isFollowing, setIsFollowing] = useState(false);
-  console.log(userDetail);
+
+  // 팔로우 버튼 클릭 시 상태 변경
   const handleFollowClick = () => {
     setIsFollowing(!isFollowing);
   };
 
   return (
     <header className="flex items-center mb-11">
+      {/* 프로필 이미지 */}
       <div className="w-36 h-36 rounded-full overflow-hidden mr-24">
         <img
           src={userDetail.profileImage}
@@ -28,6 +30,8 @@ export default function ProfileHeader({ userDetail }: ProfileHeaderProps) {
           className="w-full h-full object-cover"
         />
       </div>
+
+      {/* 사용자 이름과 팔로우 버튼 */}
       <div>
         <div className="flex items-center mb-5">
           <h1 className="text-2xl font-light mr-5">{userDetail.nickName}</h1>

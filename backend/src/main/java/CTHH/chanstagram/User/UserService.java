@@ -119,5 +119,10 @@ public class UserService {
                 user.getProfileImage(),
                 user.getPhoneNumber());
     }
+
+    public UserResponse getUserInfoByNickname(String nickName) {
+        User byNickName = userRepository.findByNickName(nickName);
+        return new UserResponse(byNickName.getNickName(), byNickName.getProfileImage());
+    }
 }
 
