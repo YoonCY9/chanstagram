@@ -208,7 +208,8 @@ public class PostService {
                         comment.getId(),
                         comment.getContent(),
                         comment.getPost().getId(),
-                        comment.getUser().getLoginId())
+                        comment.getUser().getLoginId(),
+                        comment.getLikeCommentCount())
                 ).toList());
     }
 }
