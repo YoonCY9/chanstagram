@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LikeButton from "./LikeButton";
 
 interface Comment {
@@ -8,8 +8,6 @@ interface Comment {
   content: string;
   loginId: string;
   likeCount: number;
-  // 만약 백엔드에서 좋아요 여부도 함께 반환한다면:
-  // likedByUser: boolean;
 }
 
 interface CommentItemProps {
@@ -17,11 +15,51 @@ interface CommentItemProps {
   token: string;
 }
 
+// /me API의 응답 DTO 타입 (필요한 필드만 정의)
+interface UserDetailResponse {
+  userName: string;
+  nickName: string;
+  loginId: string;
+  password: string;
+  gender: string;
+  bitrh: string; // 오타일 수 있으니 주의 (birth로 수정할 수도 있음)
+  content: string;
+  profileImage: string;
+  phoneNumber: string;
+}
+
 export default function CommentItem({ comment, token }: CommentItemProps) {
-  // 수정 모드 여부와 현재 내용 상태 관리
+  // 댓글 수정 관련 상태
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(comment.content);
   const [loading, setLoading] = useState(false);
+
+  // 현재 로그인한 사용자의 정보 상태 (내 프로필 조회 API)
+  const [currentUser, setCurrentUser] = useState<UserDetailResponse | null>(
+    null,
+  );
+
+  // /me API를 호출하여 현재 로그인한 사용자의 정보를 가져옴
+  useEffect(() => {
+    async function fetchCurrentUser() {
+      try {
+        const response = await fetch("http://localhost:8080/me", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch current user info");
+        }
+        const data: UserDetailResponse = await response.json();
+        setCurrentUser(data);
+      } catch (error) {
+        console.error("Error fetching current user info:", error);
+      }
+    }
+    fetchCurrentUser();
+  }, [token]);
 
   // 수정 모드 진입
   const handleEditClick = () => {
@@ -54,7 +92,7 @@ export default function CommentItem({ comment, token }: CommentItemProps) {
         throw new Error("Failed to update comment");
       }
 
-      // 백엔드가 수정된 CommentResponse DTO를 반환합니다.
+      // 백엔드에서 수정된 CommentResponse DTO를 반환합니다.
       const data = await response.json();
       setContent(data.content);
       setIsEditing(false);
@@ -69,12 +107,26 @@ export default function CommentItem({ comment, token }: CommentItemProps) {
     <li className="flex items-start space-x-3">
       <img
         className="w-9 h-9 rounded-full object-cover"
-        src="/images/default-avatar.png"
+        src={
+          // 댓글 작성자가 현재 로그인 사용자라면 currentUser.profileImage를 사용하고,
+          // 아니라면 기본 아바타 이미지를 사용합니다.
+          currentUser && comment.loginId === currentUser.loginId
+            ? currentUser.profileImage
+            : "/images/default-avatar.png"
+        }
         alt="Avatar"
       />
       <div className="flex-1">
         <p className="text-sm text-gray-700">
-          <span className="font-semibold mr-1">@{comment.loginId}</span>
+          <span className="font-semibold mr-1">
+            {
+              // 댓글 작성자가 현재 로그인 사용자라면 currentUser.nickName (또는 userName)을 표시하고,
+              // 아니라면 loginId를 표시합니다.
+              currentUser && comment.loginId === currentUser.loginId
+                ? currentUser.nickName
+                : comment.loginId
+            }
+          </span>
           {isEditing ? (
             <textarea
               className="border rounded p-1"
@@ -91,8 +143,6 @@ export default function CommentItem({ comment, token }: CommentItemProps) {
             commentId={comment.id}
             initialLikeCount={comment.likeCount}
             token={token}
-            // 만약 초기 좋아요 상태도 필요하다면 initialLiked prop도 전달합니다.
-            // initialLiked={comment.likedByUser}
           />
           {/* 수정 및 기타 버튼 */}
           {isEditing ? (
