@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import LikeButton from "./LikeButton";
+import CommentDeleteButton from "./CommentDeleteButton"; // 댓글 삭제 버튼 컴포넌트 추가
 
 interface Comment {
   id: number;
@@ -29,6 +31,8 @@ interface UserDetailResponse {
 }
 
 export default function CommentItem({ comment, token }: CommentItemProps) {
+  const router = useRouter();
+
   // 댓글 수정 관련 상태
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(comment.content);
@@ -119,13 +123,9 @@ export default function CommentItem({ comment, token }: CommentItemProps) {
       <div className="flex-1">
         <p className="text-sm text-gray-700">
           <span className="font-semibold mr-1">
-            {
-              // 댓글 작성자가 현재 로그인 사용자라면 currentUser.nickName (또는 userName)을 표시하고,
-              // 아니라면 loginId를 표시합니다.
-              currentUser && comment.loginId === currentUser.loginId
-                ? currentUser.nickName
-                : comment.loginId
-            }
+            {currentUser && comment.loginId === currentUser.loginId
+              ? currentUser.nickName
+              : comment.loginId}
           </span>
           {isEditing ? (
             <textarea
@@ -144,7 +144,6 @@ export default function CommentItem({ comment, token }: CommentItemProps) {
             initialLikeCount={comment.likeCount}
             token={token}
           />
-          {/* 수정 및 기타 버튼 */}
           {isEditing ? (
             <>
               <button
@@ -161,11 +160,17 @@ export default function CommentItem({ comment, token }: CommentItemProps) {
               >
                 Cancel
               </button>
+              {/* 수정 모드일 때 삭제 버튼 추가 */}
+              <CommentDeleteButton commentId={comment.id} token={token} />
             </>
           ) : (
-            <button onClick={handleEditClick} className="hover:underline">
-              Edit
-            </button>
+            <>
+              <button onClick={handleEditClick} className="hover:underline">
+                Edit
+              </button>
+              {/* 편집 모드가 아닐 때도 삭제 버튼 표시 */}
+              <CommentDeleteButton commentId={comment.id} token={token} />
+            </>
           )}
         </div>
       </div>
