@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import ProfileHeader from "./ProfileHeader";
 import ProfileTabs from "./ProfileTabs";
@@ -7,6 +5,7 @@ import ProfilePosts from "./ProfilePosts";
 import BackButton from "../BackButton";
 import ProfileInfo from "./ProfileInfo";
 import { useParams } from "next/navigation";
+import { cookies } from "next/headers";
 
 // UserResponse와 PostsByNickName 타입 정의
 export interface UserResponse {
@@ -80,62 +79,29 @@ async function fetchFollowingByNickName(
   return data;
 }
 
-export default function ProfilePage() {
-  const [userDetail, setUserDetail] = useState<UserResponse | null>(null);
-  const [posts, setPosts] = useState<PostsByNickName[]>([]); // 게시물 상태
-  const [followers, setFollowers] = useState<FollowResponse[]>([]); // 팔로워 상태
-  const [following, setFollowing] = useState<FollowResponse[]>([]); // 팔로잉 상태
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const params = useParams<{ nickname: string }>(); // URL에서 nickname 파라미터 가져오기
-
-  useEffect(() => {
-    const nickname = params.nickname;
-    if (nickname) {
-      const fetchData = async () => {
-        try {
-          // 사용자 정보 가져오기
-          const userProfile = await fetchUsersByNickName(nickname);
-          setUserDetail(userProfile); // userDetail 설정
-
-          // 게시물 데이터 가져오기 (게시물이 없어도 상관없음)
-          const postsData = await fetchPostsByNickName(nickname);
-          setPosts(postsData); // 게시물 데이터 설정
-
-          // 팔로워 데이터 가져오기
-          const followersData = await fetchFollowersByNickName(nickname);
-          setFollowers(followersData); // 팔로워 리스트 설정
-
-          // 팔로잉 데이터 가져오기
-          const followingData = await fetchFollowingByNickName(nickname);
-          setFollowing(followingData); // 팔로잉 리스트 설정
-
-          setIsLoading(false); // 로딩 완료
-        } catch (err) {
-          setError("데이터를 가져오는 데 실패했습니다.");
-          setIsLoading(false);
-        }
-      };
-
-      fetchData();
-    }
-  }, []); // `nickname`이 변경될 때마다 데이터 새로 가져오기
-
-  if (isLoading) return <div>로딩 중...</div>;
-  if (error) return <div>오류: {error}</div>;
+export default async function ProfilePage(props: {
+  params: Promise<{ nickname: string }>;
+}) {
+  const nickname = (await props.params).nickname;
+  const userProfile = await fetchUsersByNickName(nickname);
+  const postsData = await fetchPostsByNickName(nickname);
+  const followersData = await fetchFollowersByNickName(nickname);
+  const followingData = await fetchFollowingByNickName(nickname);
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <BackButton />
       {/* ProfileHeader 컴포넌트는 항상 렌더링하며, userDetail을 게시물에서 가져옵니다. */}
-      <ProfileHeader userDetail={userDetail} />
+      <ProfileHeader userDetail={userProfile} token={token} />
       <ProfileInfo
-        postCount={posts.length}
-        followers={followers}
-        following={following}
+        postCount={postsData.length}
+        followers={followersData}
+        following={followingData}
       />
       <ProfileTabs />
-      <ProfilePosts posts={posts} /> {/* 게시물 리스트 전달 */}
+      <ProfilePosts posts={postsData} /> {/* 게시물 리스트 전달 */}
     </div>
   );
 }
