@@ -2,6 +2,7 @@ import React from "react";
 import CommentForm from "./CommentForm";
 import CommentItem from "./CommentItem"; // 새로 만든 댓글 항목 컴포넌트
 import { cookies } from "next/headers";
+import BackButton from "@/app/profile/BackButton";
 
 async function fetchComments(postId: string) {
   const res = await fetch(`http://localhost:8080/comments/${postId}`, {
@@ -40,6 +41,7 @@ export default async function CommentsPage({
 
     return (
       <div className="max-w-md mx-auto p-4">
+        <BackButton />
         <div className="bg-white border rounded-lg shadow-sm">
           <div className="p-4 border-b">
             <h2 className="text-xl font-bold">Comments</h2>

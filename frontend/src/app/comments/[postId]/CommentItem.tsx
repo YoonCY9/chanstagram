@@ -117,8 +117,6 @@ export default function CommentItem({ comment, token }: CommentItemProps) {
               Edit
             </button>
           )}
-          <button className="hover:underline">Reply</button>
-          <span>1m</span>
         </div>
       </div>
     </li>
