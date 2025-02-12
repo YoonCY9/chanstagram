@@ -124,5 +124,12 @@ public class UserService {
         User byNickName = userRepository.findByNickName(nickName);
         return new UserResponse(byNickName.getNickName(), byNickName.getProfileImage());
     }
+
+    public UserResponse getUserInfoByloginId(String loginId) {
+        User user = userRepository.findByLoginId(loginId).orElseThrow(
+                () -> new NoSuchElementException("해당하는 유저가 없습니다.")
+        );
+        return new UserResponse(user.getNickName(), user.getProfileImage());
+    }
 }
 

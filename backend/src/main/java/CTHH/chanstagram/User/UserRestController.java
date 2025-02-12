@@ -55,5 +55,10 @@ public class UserRestController {
     public UserResponse getUserInfoByNickname(@PathVariable String nickName) {
         return userService.getUserInfoByNickname(nickName);
     }
+
+    @GetMapping("/users/{nickName}")
+    public UserResponse getUserInfoByloginId(@PathVariable String loginId) {
+        return userService.getUserInfoByloginId(loginId);
+    }
 }
 
