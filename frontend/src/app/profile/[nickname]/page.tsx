@@ -55,10 +55,36 @@ async function fetchUsersByNickName(nickname: string): Promise<UserResponse> {
   console.log(data);
   return data;
 }
+async function fetchFollowersByNickName(
+  nickname: string,
+): Promise<FollowResponse[]> {
+  const response = await fetch(`${apiBaseUrl}/follows/followers/{nickName}`);
+
+  if (!response.ok) {
+    throw new Error("팔로워리스트를 가져오는 데 실패했습니다.");
+  }
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+async function fetchFollowingByNickName(
+  nickname: string,
+): Promise<FollowResponse[]> {
+  const response = await fetch(`${apiBaseUrl}/follows/followees/{nickName}`);
+
+  if (!response.ok) {
+    throw new Error("팔로잉리스트를 가져오는 데 실패했습니다.");
+  }
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
 
 export default function ProfilePage() {
   const [userDetail, setUserDetail] = useState<UserResponse | null>(null);
   const [posts, setPosts] = useState<PostsByNickName[]>([]); // 게시물 상태
+  const [followers, setFollowers] = useState<FollowResponse[]>([]); // 팔로워 상태
+  const [following, setFollowing] = useState<FollowResponse[]>([]); // 팔로잉 상태
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const params = useParams<{ nickname: string }>(); // URL에서 nickname 파라미터 가져오기
@@ -68,14 +94,21 @@ export default function ProfilePage() {
     if (nickname) {
       const fetchData = async () => {
         try {
-          // 사용자 정보만 가져오기
+          // 사용자 정보 가져오기
           const userProfile = await fetchUsersByNickName(nickname);
-
-          setUserDetail(userProfile); // userDetail을 설정
+          setUserDetail(userProfile); // userDetail 설정
 
           // 게시물 데이터 가져오기 (게시물이 없어도 상관없음)
           const postsData = await fetchPostsByNickName(nickname);
           setPosts(postsData); // 게시물 데이터 설정
+
+          // 팔로워 데이터 가져오기
+          const followersData = await fetchFollowersByNickName(nickname);
+          setFollowers(followersData); // 팔로워 리스트 설정
+
+          // 팔로잉 데이터 가져오기
+          const followingData = await fetchFollowingByNickName(nickname);
+          setFollowing(followingData); // 팔로잉 리스트 설정
 
           setIsLoading(false); // 로딩 완료
         } catch (err) {
@@ -96,7 +129,11 @@ export default function ProfilePage() {
       <BackButton />
       {/* ProfileHeader 컴포넌트는 항상 렌더링하며, userDetail을 게시물에서 가져옵니다. */}
       <ProfileHeader userDetail={userDetail} />
-      <ProfileInfo postCount={posts.length} /> {/* 게시물 갯수 전달 */}
+      <ProfileInfo
+        postCount={posts.length}
+        followers={followers}
+        following={following}
+      />
       <ProfileTabs />
       <ProfilePosts posts={posts} /> {/* 게시물 리스트 전달 */}
     </div>
