@@ -1,7 +1,6 @@
-// app/comments/[postId]/page.tsx
 import React from "react";
 import CommentForm from "./CommentForm";
-import LikeButton from "./LikeButton";
+import CommentItem from "./CommentItem"; // 새로 만든 댓글 항목 컴포넌트
 import { cookies } from "next/headers";
 
 async function fetchComments(postId: string) {
@@ -23,6 +22,7 @@ export default async function CommentsPage({
 }) {
   const { postId } = params;
 
+  // 쿠키에서 token 값을 가져옴
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
@@ -51,31 +51,11 @@ export default async function CommentsPage({
             ) : (
               <ul className="space-y-4">
                 {comments.map((comment: any) => (
-                  <li key={comment.id} className="flex items-start space-x-3">
-                    <img
-                      className="w-9 h-9 rounded-full object-cover"
-                      src="/images/default-avatar.png"
-                      alt="Avatar"
-                    />
-                    <div className="flex-1">
-                      <p className="text-sm text-gray-700">
-                        <span className="font-semibold mr-1">
-                          @{comment.loginId}
-                        </span>
-                        {comment.content}
-                      </p>
-                      <div className="flex space-x-5 mt-1 text-xs text-gray-400">
-                        {/* 좋아요 버튼: comment.likeCount 값을 initialLikeCount로 전달 */}
-                        <LikeButton
-                          commentId={comment.id}
-                          initialLikeCount={comment.likeCount}
-                          token={token}
-                        />
-                        <button className="hover:underline">Reply</button>
-                        <span>1m</span>
-                      </div>
-                    </div>
-                  </li>
+                  <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                    token={token}
+                  />
                 ))}
               </ul>
             )}
