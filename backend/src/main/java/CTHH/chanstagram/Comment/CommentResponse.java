@@ -4,6 +4,7 @@ public record CommentResponse(
         Long id,
         String content,
         Long postId,
-        String loginId
+        String loginId,
+        int likeCount
 ) {
 }

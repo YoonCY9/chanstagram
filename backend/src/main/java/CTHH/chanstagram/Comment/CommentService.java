@@ -66,7 +66,12 @@ public class CommentService {
         }
         post.increaseCommentCount();
 
-        return new CommentResponse(comment.getId(),comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
+        return new CommentResponse(
+                comment.getId(),
+                comment.getContent(),
+                comment.getPost().getId(),
+                comment.getUser().getLoginId(),
+                comment.getLikeCommentCount());
 
 
     }
@@ -80,7 +85,12 @@ public class CommentService {
         } else throw new RuntimeException("작성자가 일치하지 않습니다.");
 
 
-        return new CommentResponse(comment.getId(),comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
+        return new CommentResponse(
+                comment.getId(),
+                comment.getContent(),
+                comment.getPost().getId(),
+                comment.getUser().getLoginId(),
+                comment.getLikeCommentCount());
 
     }
 
@@ -95,7 +105,6 @@ public class CommentService {
 
 
     @Transactional
-
     public CommentResponse like(Long commentId, User user) {
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
@@ -103,11 +112,18 @@ public class CommentService {
 
         Like like = likeRepository.findByUser_LoginIdAndComment_Id(user.getLoginId(), commentId);
         if (like == null) {
+            comment.upLikeCommentCount();
             likeRepository.save(new Like(user, comment));
 
         } else {
+            comment.downLikeCommentCount();
             likeRepository.delete(like);
         }
-        return new CommentResponse(comment.getId(),comment.getContent(),comment.getPost().getId(),comment.getUser().getLoginId());
+        return new CommentResponse(
+                comment.getId(),
+                comment.getContent(),
+                comment.getPost().getId(),
+                comment.getUser().getLoginId(),
+                comment.getLikeCommentCount());
     }
 }
