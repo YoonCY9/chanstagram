@@ -2,17 +2,18 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { uploadImage } from "./uploadImage";
+import { uploadImage } from "@/app/createpost/uploadImage";
+import { createPostAction } from "@/app/createpost/createPost";
 
-export default function createPost() {
+export default function Page() {
   const [postData, setPostData] = useState({
     content: "",
     imageUrl: [] as string[],
   });
+  const [imgUploading, setImgUploading] = useState(false);
   const router = useRouter();
 
-  const [imgUploading, setImgUploading] = useState(false);
-
+  // 텍스트 입력값 변경 핸들러
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setPostData({
       ...postData,
@@ -20,19 +21,18 @@ export default function createPost() {
     });
   };
 
+  // 파일 업로드 처리
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setImgUploading(true); // 업로드 상태 표시
+    setImgUploading(true);
     try {
-      // 이미지 업로드 함수 호출
       const formData = new FormData();
       formData.append("image", file);
 
-      const response = await uploadImage(formData); // 업로드 실행
+      const response = await uploadImage(formData);
       if (response?.data?.display_url) {
-        // 업로드된 이미지 URL을 postData.imageUrl에 추가
         setPostData((prev) => ({
           ...prev,
           imageUrl: [...prev.imageUrl, response.data.display_url],
@@ -42,35 +42,9 @@ export default function createPost() {
       }
     } catch (error) {
       console.error("이미지 업로드 오류:", error);
+      alert("이미지 업로드 중 문제가 발생했습니다.");
     } finally {
-      setImgUploading(false); // 업로드 상태 해제
-    }
-  };
-
-  const handleUpload = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // 쿠키 자동 포함
-        body: JSON.stringify(postData),
-      });
-
-      if (response.ok) {
-        alert("업로드 성공");
-        router.push("/home");
-      } else if (response.status === 401) {
-        // 인증 실패 시 처리
-        alert("로그인이 필요합니다.");
-        router.push("/login");
-      } else {
-        alert("업로드 실패");
-      }
-    } catch (error) {
-      console.error("업로드 중 오류 발생:", error);
-      alert("업로드 중 문제가 발생했습니다.");
+      setImgUploading(false);
     }
   };
 
@@ -84,8 +58,9 @@ export default function createPost() {
           Chanstagram
         </button>
       </header>
-      <div>
-        <form className="mt-4">
+      <div className="p-4">
+        {/* form의 action 속성에 서버 액션을 지정합니다. */}
+        <form action={createPostAction} method="POST">
           <textarea
             placeholder="내용을 입력해주세요."
             name="content"
@@ -93,26 +68,35 @@ export default function createPost() {
             onChange={handleChange}
             className="border border-gray-400 w-full p-4 h-64"
           />
-        </form>
-        <form className="p-6 border border-gray-600">
+          <div className="p-6 border border-gray-600 mt-4">
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              disabled={imgUploading}
+              className={`${imgUploading ? "opacity-50 cursor-not-allowed" : ""}`}
+            />
+            {imgUploading && (
+              <p className="text-blue-500">이미지 업로드 중...</p>
+            )}
+          </div>
+          {/* 서버 액션으로 전달할 이미지 URL 목록을 hidden input에 JSON 문자열로 담습니다 */}
           <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            disabled={imgUploading} // 업로드 중이면 입력 비활성화
-            className={`${imgUploading ? "opacity-50 cursor-not-allowed" : ""}`}
+            type="hidden"
+            name="imageUrl"
+            value={JSON.stringify(postData.imageUrl)}
           />
-          {imgUploading && <p className="text-blue-500">이미지 업로드 중...</p>}
+          <button
+            type="submit"
+            disabled={imgUploading}
+            className={`mt-4 flex items-center gap-2 px-4 py-2 bg-blue-500 text-white shadow-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 transition ${
+              imgUploading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            onClick={() => router.push("/home")}
+          >
+            {imgUploading ? "업로드 중..." : "업로드"}
+          </button>
         </form>
-        <button
-          onClick={handleUpload}
-          disabled={imgUploading} // 업로드 중이면 버튼 비활성화
-          className={`mt-4 flex items-center gap-2 px-4 py-2 bg-blue-500 text-white shadow-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 transition ${
-            imgUploading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {imgUploading ? "업로드 중..." : "업로드"}
-        </button>
       </div>
     </>
   );
