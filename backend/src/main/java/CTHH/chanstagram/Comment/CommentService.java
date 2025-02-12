@@ -32,6 +32,7 @@ public class CommentService {
         this.postHashTagService = postHashTagService;
     }
 
+    @Transactional
     public CommentResponse create(CreateCommentRequest request, User user) {
         Post post = postRepository.findById(request.postId())
                 .orElseThrow(() -> new NoSuchElementException("postId를 찾을 수 없습니다.:" + request.postId()));

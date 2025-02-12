@@ -56,7 +56,7 @@ public class UserRestController {
         return userService.getUserInfoByNickname(nickName);
     }
 
-    @GetMapping("/users/{nickName}")
+    @GetMapping("/users/{loginId}")
     public UserResponse getUserInfoByloginId(@PathVariable String loginId) {
         return userService.getUserInfoByloginId(loginId);
     }
