@@ -11,6 +11,7 @@ import { cookies } from "next/headers";
 export interface UserResponse {
   nickName: string;
   profileImage: string;
+  following: boolean;
 }
 
 export interface PostsByNickName {
@@ -43,9 +44,13 @@ async function fetchPostsByNickName(
   return data;
 }
 async function fetchUsersByNickName(nickname: string): Promise<UserResponse> {
-  console.log("nickname " + nickname);
-  const response = await fetch(`${apiBaseUrl}/users/${nickname}`);
-  console.log("nickname " + nickname);
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  const response = await fetch(`${apiBaseUrl}/users/${nickname}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 
   if (!response.ok) {
     throw new Error("게시물을 가져오는 데 실패했습니다.");
@@ -63,7 +68,7 @@ async function fetchFollowersByNickName(
     throw new Error("팔로워리스트를 가져오는 데 실패했습니다.");
   }
   const data = await response.json();
-  console.log(data);
+
   return data;
 }
 async function fetchFollowingByNickName(
@@ -75,7 +80,7 @@ async function fetchFollowingByNickName(
     throw new Error("팔로잉리스트를 가져오는 데 실패했습니다.");
   }
   const data = await response.json();
-  console.log(data);
+
   return data;
 }
 

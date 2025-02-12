@@ -2,15 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { cookies } from "next/headers";
-
-interface UserDetailResponse {
-  userName: string;
-  nickName: string;
-  profileImage: string;
-}
+import { UserResponse } from "@/app/profile/[nickname]/page";
 
 interface ProfileHeaderProps {
-  userDetail: UserDetailResponse;
+  userDetail: UserResponse;
   isFollowing: boolean;
   setIsFollowing: (following: boolean) => void;
   token: string;
@@ -20,12 +15,12 @@ export default function ProfileHeader({
   userDetail,
   token,
 }: ProfileHeaderProps) {
-  const [Follow, setIsFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(userDetail.following);
   const handleFollowClick = async () => {
     if (token) {
       try {
         await followUser(userDetail.nickName, token);
-        setIsFollowing(!Follow); // 팔로우 상태 변경
+        setIsFollowing(!isFollowing); // 팔로우 상태 변경
       } catch (error) {
         console.error("팔로우 실패:", error);
       }
@@ -64,12 +59,12 @@ export default function ProfileHeader({
           <button
             onClick={handleFollowClick}
             className={`px-2 py-1 rounded text-sm font-semibold ${
-              Follow
+              isFollowing
                 ? "bg-gray-200 text-gray-800"
                 : "bg-blue-500 text-white hover:bg-blue-600"
             }`}
           >
-            {Follow ? "Following" : "Follow"}
+            {isFollowing ? "Following" : "Follow"}
           </button>
         </div>
       </div>

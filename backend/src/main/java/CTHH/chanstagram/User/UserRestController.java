@@ -50,10 +50,11 @@ public class UserRestController {
         User user = loginMemberResolver.resolveUserFromToken(authorization);
         return userService.getUserInfo(user);
     }
-
+    //프로필 조회
     @GetMapping("/users/{nickName}")
-    public UserResponse getUserInfoByNickname(@PathVariable String nickName) {
-        return userService.getUserInfoByNickname(nickName);
+    public UserfollowResponse getUserInfoByNickname(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,@PathVariable String nickName) {
+        User me = loginMemberResolver.resolveUserFromToken(authorization);
+        return userService.getUserInfoByNickname(nickName,me);
     }
 }
 

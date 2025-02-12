@@ -1,5 +1,9 @@
+import { FollowResponse } from "@/app/profile/[nickname]/page";
+
 interface ProfileInfoProps {
   postCount: number;
+  followers: FollowResponse[];
+  following: FollowResponse[];
 }
 
 export default function ProfileInfo({
