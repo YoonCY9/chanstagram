@@ -1,25 +1,46 @@
 "use client";
 
-import { useState } from "react";
-
-interface UserDetailResponse {
-  userName: string;
-  nickName: string;
-  profileImage: string;
-}
+import { useState, useEffect } from "react";
+import { cookies } from "next/headers";
+import { UserResponse } from "@/app/profile/[nickname]/page";
 
 interface ProfileHeaderProps {
-  userDetail: UserDetailResponse;
+  userDetail: UserResponse;
+  isFollowing: boolean;
+  setIsFollowing: (following: boolean) => void;
+  token: string;
 }
 
-export default function ProfileHeader({ userDetail }: ProfileHeaderProps) {
-  const [isFollowing, setIsFollowing] = useState(false);
-
-  // 팔로우 버튼 클릭 시 상태 변경
-  const handleFollowClick = () => {
-    setIsFollowing(!isFollowing);
+export default function ProfileHeader({
+  userDetail,
+  token,
+}: ProfileHeaderProps) {
+  const [isFollowing, setIsFollowing] = useState(userDetail.following);
+  const handleFollowClick = async () => {
+    if (token) {
+      try {
+        await followUser(userDetail.nickName, token);
+        setIsFollowing(!isFollowing); // 팔로우 상태 변경
+      } catch (error) {
+        console.error("팔로우 실패:", error);
+      }
+    }
   };
+  async function followUser(nickname: string, token: string) {
+    const response = await fetch(`http://localhost:8080/follows/${nickname}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token, // 헤더에 토큰 추가
+      },
+    });
 
+    if (!response.ok) {
+      throw new Error("팔로우 실패");
+    }
+
+    // return response.json(); // 성공적으로 팔로우가 완료되면 응답 반환
+  }
   return (
     <header className="flex items-center mb-11">
       {/* 프로필 이미지 */}
