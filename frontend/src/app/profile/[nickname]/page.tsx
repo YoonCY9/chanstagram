@@ -6,6 +6,7 @@ import BackButton from "../BackButton";
 import ProfileInfo from "./ProfileInfo";
 import { useParams } from "next/navigation";
 import { cookies } from "next/headers";
+import LogoutButton from "@/components/LogOutButton";
 
 // UserResponse와 PostsByNickName 타입 정의
 export interface UserResponse {
@@ -53,7 +54,7 @@ async function fetchUsersByNickName(nickname: string): Promise<UserResponse> {
   });
 
   if (!response.ok) {
-    throw new Error("게시물을 가져오는 데 실패했습니다.");
+    throw new Error("유저 정보를 가져오는 데 실패했습니다.");
   }
   const data = await response.json();
   console.log(data);
@@ -98,6 +99,7 @@ export default async function ProfilePage(props: {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
       <BackButton />
+      <LogoutButton />
       {/* ProfileHeader 컴포넌트는 항상 렌더링하며, userDetail을 게시물에서 가져옵니다. */}
       <ProfileHeader userDetail={userProfile} token={token} />
       <ProfileInfo
