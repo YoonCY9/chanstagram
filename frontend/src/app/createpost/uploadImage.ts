@@ -13,7 +13,7 @@ export async function uploadImage(formData: FormData) {
 
   // imgbb API URL (API 키가 쿼리 파라미터로 포함됨)
   const imgbbUrl =
-    "https://api.imgbb.com/1/upload?key=01edaf777d53bebcf2167e2359fbd026";
+    "https://api.imgbb.com/1/upload?key=e263a076115c1e96adff6b26263ac866";
 
   // imgbb API에 전달할 form data 구성
   const imgbbFormData = new FormData();

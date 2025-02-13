@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { deletePost } from "@/app/home/deletePost";
+import { PlusCircle } from "lucide-react";
 
 interface PostProps {
   postId: number;
@@ -18,7 +19,7 @@ const DeleteButton: React.FC<PostProps> = ({ postId }) => {
         window.location.reload(); // 페이지 새로고침
       } catch (error) {
         console.error(error);
-        alert("게시글 삭제에 실패했습니다.");
+        alert("자신의 게시글만 삭제 가능 합니다.");
       }
     }
   };
@@ -154,7 +155,9 @@ const Home = () => {
             >
               {/* 프로필 */}
               <button
-                onClick={() => router.push("/profile")}
+                onClick={() =>
+                  router.push(`/profile/${encodeURIComponent(user.nickName)}`)
+                }
                 className="flex items-center p-6"
               >
                 <img
@@ -211,6 +214,11 @@ const Home = () => {
                   <Link href={`/comments/${user.postId}`}>
                     <p className="text-sm text-gray-600 inline-block px-2 py-1 rounded-md hover:bg-gray-200 transition-colors">
                       댓글 보기
+                    </p>
+                  </Link>
+                  <Link href={`/updatepost?postId=${user.postId}`}>
+                    <p className="text-sm text-blue-600 hover:underline">
+                      수정
                     </p>
                   </Link>
                   <DeleteButton postId={user.postId} /> {/* 삭제 버튼 추가 */}
