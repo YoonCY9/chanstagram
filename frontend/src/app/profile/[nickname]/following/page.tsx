@@ -1,4 +1,5 @@
-import { FollowResponse } from "@/app/profile/[nickname]/page"; // FollowResponse 타입 import
+import { FollowResponse } from "@/app/profile/[nickname]/page";
+import Link from "next/link"; // FollowResponse 타입 import
 
 // 서버에서 데이터를 처리하는 Server Component
 export default async function Following({
@@ -28,17 +29,19 @@ export default async function Following({
       <ul>
         {following.length > 0 ? (
           following.map((followee) => (
-            <li key={followee.nickName} className="flex items-center mb-4">
-              <img
-                src={followee.profileImage}
-                alt={followee.nickName}
-                className="w-12 h-12 rounded-full mr-4"
-              />
-              <div>
-                <h3 className="font-medium">{followee.nickName}</h3>
-                <p className="text-sm text-gray-500">{followee.userName}</p>
-              </div>
-            </li>
+            <Link href={`/profile/${followee.nickName}`}>
+              <li key={followee.nickName} className="flex items-center mb-4">
+                <img
+                  src={followee.profileImage}
+                  alt={followee.nickName}
+                  className="w-12 h-12 rounded-full mr-4"
+                />
+                <div>
+                  <h3 className="font-medium">{followee.nickName}</h3>
+                  <p className="text-sm text-gray-500">{followee.userName}</p>
+                </div>
+              </li>
+            </Link>
           ))
         ) : (
           <p>팔로잉이 없습니다.</p>

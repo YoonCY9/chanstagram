@@ -1,4 +1,5 @@
 import { FollowResponse } from "@/app/profile/[nickname]/page";
+import Link from "next/link";
 
 export default async function Followers({
   params,
@@ -28,17 +29,20 @@ export default async function Followers({
       <ul>
         {followers.length > 0 ? (
           followers.map((follower) => (
-            <li key={follower.nickName} className="flex items-center mb-4">
-              <img
-                src={follower.profileImage}
-                alt={follower.nickName}
-                className="w-12 h-12 rounded-full mr-4"
-              />
-              <div>
-                <h3 className="font-medium">{follower.nickName}</h3>
-                <p className="text-sm text-gray-500">{follower.userName}</p>
-              </div>
-            </li>
+            <Link href={`/profile/${follower.nickName}`}>
+              <li key={follower.nickName} className="flex items-center mb-4">
+                <img
+                  src={follower.profileImage}
+                  alt={follower.nickName}
+                  className="w-12 h-12 rounded-full mr-4"
+                />
+
+                <div>
+                  <h3 className="font-medium">{follower.nickName}</h3>
+                  <p className="text-sm text-gray-500">{follower.userName}</p>
+                </div>
+              </li>
+            </Link>
           ))
         ) : (
           <p>팔로워가 없습니다.</p>
