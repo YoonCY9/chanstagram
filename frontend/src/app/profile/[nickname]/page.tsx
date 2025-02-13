@@ -46,7 +46,7 @@ async function fetchPostsByNickName(
 async function fetchUsersByNickName(nickname: string): Promise<UserResponse> {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
-  const response = await fetch(`${apiBaseUrl}/users/${nickname}`, {
+  const response = await fetch(`${apiBaseUrl}/users/nickName/${nickname}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
