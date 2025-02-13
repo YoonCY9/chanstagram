@@ -151,7 +151,7 @@ public class PostService {
                 new NoSuchElementException("존재하지 않는 게시글" + postId));
 
         if (post.getUser().getUserName().equals(user.getUserName())) {
-            post.setPost(dto.content(), dto.imageUrl());
+            post.setPost(dto.content());
         }
     }
 
@@ -161,6 +161,9 @@ public class PostService {
     public void delete(Long postId, User user) {
         Post post = postRepository.findById(postId).orElseThrow(() ->
                 new NoSuchElementException("존재하지 않는 유저 게시글" + postId));
+        if (!post.getUser().equals(user)) {
+            throw new IllegalArgumentException("자신의 게시글만 삭제할 수 있습니다");
+        }
         if (post.getUser().equals(user)) {
             commentRepository.deleteAllByPostId(postId);
             postRepository.delete(post);
