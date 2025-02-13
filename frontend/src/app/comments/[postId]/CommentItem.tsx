@@ -18,7 +18,7 @@ interface CommentItemProps {
 }
 
 // /me API의 응답 DTO 타입 (필요한 필드만 정의)
-interface UserDetailResponse {
+export interface UserDetailResponse {
   userName: string;
   nickName: string;
   loginId: string;
