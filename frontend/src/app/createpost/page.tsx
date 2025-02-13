@@ -50,10 +50,10 @@ export default function Page() {
 
   return (
     <>
-      <header className="flex items-center justify-between px-4 py-2 bg-white shadow-md">
+      <header className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 sticky top-0 z-10">
         <button
           onClick={() => router.push("/home")}
-          className="text-xl font-bold"
+          className="text-xl font-bold text-gray-800 hover:text-gray-600 transition-colors"
         >
           Chanstagram
         </button>
