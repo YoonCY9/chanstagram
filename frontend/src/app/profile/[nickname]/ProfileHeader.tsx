@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { cookies } from "next/headers";
 import { UserResponse } from "@/app/profile/[nickname]/page";
+import { useRouter } from "next/navigation";
 
 interface ProfileHeaderProps {
   userDetail: UserResponse;
@@ -16,11 +17,13 @@ export default function ProfileHeader({
   token,
 }: ProfileHeaderProps) {
   const [isFollowing, setIsFollowing] = useState(userDetail.following);
+  const router = useRouter();
   const handleFollowClick = async () => {
     if (token) {
       try {
         await followUser(userDetail.nickName, token);
         setIsFollowing(!isFollowing); // 팔로우 상태 변경
+        router.refresh();
       } catch (error) {
         console.error("팔로우 실패:", error);
       }

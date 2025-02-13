@@ -57,13 +57,12 @@ async function fetchUsersByNickName(nickname: string): Promise<UserResponse> {
     throw new Error("유저 정보를 가져오는 데 실패했습니다.");
   }
   const data = await response.json();
-  console.log(data);
   return data;
 }
 async function fetchFollowersByNickName(
   nickname: string,
 ): Promise<FollowResponse[]> {
-  const response = await fetch(`${apiBaseUrl}/follows/followers/{nickName}`);
+  const response = await fetch(`${apiBaseUrl}/follows/followers/${nickname}`);
 
   if (!response.ok) {
     throw new Error("팔로워리스트를 가져오는 데 실패했습니다.");
@@ -75,13 +74,12 @@ async function fetchFollowersByNickName(
 async function fetchFollowingByNickName(
   nickname: string,
 ): Promise<FollowResponse[]> {
-  const response = await fetch(`${apiBaseUrl}/follows/followees/{nickName}`);
+  const response = await fetch(`${apiBaseUrl}/follows/followees/${nickname}`);
 
   if (!response.ok) {
     throw new Error("팔로잉리스트를 가져오는 데 실패했습니다.");
   }
   const data = await response.json();
-
   return data;
 }
 
