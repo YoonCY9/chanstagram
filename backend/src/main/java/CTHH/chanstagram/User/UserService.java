@@ -20,14 +20,16 @@ public class UserService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final FollowRepository followRepository;
+    private final UserQueryRepository userQueryRepository;
 
     public UserService(UserRepository userRepository, JwtProvider jwtProvider,
-                       PostRepository postRepository, CommentRepository commentRepository, FollowRepository followRepository) {
+                       PostRepository postRepository, CommentRepository commentRepository, FollowRepository followRepository, UserQueryRepository userQueryRepository) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
         this.followRepository = followRepository;
+        this.userQueryRepository = userQueryRepository;
     }
 
     //회원가입
@@ -123,10 +125,10 @@ public class UserService {
                 user.getPhoneNumber());
     }
 
-    public UserfollowResponse getUserInfoByNickname(String nickName,User me) {
+    public UserfollowResponse getUserInfoByNickname(String nickName, User me) {
         User byNickName = userRepository.findByNickName(nickName);
         boolean follow = followRepository.existsByFollowerAndFollowee(me, byNickName);
-        return new UserfollowResponse(byNickName.getNickName(), byNickName.getProfileImage(),follow);
+        return new UserfollowResponse(byNickName.getNickName(), byNickName.getProfileImage(), follow);
     }
 
     public UserResponse getUserInfoByloginId(String loginId) {
@@ -134,6 +136,14 @@ public class UserService {
                 () -> new NoSuchElementException("해당하는 유저가 없습니다.")
         );
         return new UserResponse(user.getNickName(), user.getProfileImage());
+    }
+
+    public UserListResponse findByNickName(int page, int size, String keyWord) {
+        List<User> users = userQueryRepository.findUser(page, size, keyWord);
+        return new UserListResponse(
+                users.stream()
+                        .map(user -> new UserResponse(user.getNickName(), user.getProfileImage()))
+                        .toList());
     }
 }
 
