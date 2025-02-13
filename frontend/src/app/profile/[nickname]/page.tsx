@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import ProfileHeader from "./ProfileHeader";
 import ProfileTabs from "./ProfileTabs";
 import ProfilePosts from "./ProfilePosts";
@@ -7,6 +6,7 @@ import ProfileInfo from "./ProfileInfo";
 import { useParams } from "next/navigation";
 import { cookies } from "next/headers";
 import LogoutButton from "@/components/LogoutButton";
+import DeleteAccountButton from "@/components/DeleteAccountButton";
 
 // UserResponse와 PostsByNickName 타입 정의
 export interface UserResponse {
@@ -101,6 +101,7 @@ export default async function ProfilePage(props: {
       <BackButton />
       <div className="flex justify-end px-4 py-2">
         <LogoutButton />
+        <DeleteAccountButton />
       </div>
       {/* ProfileHeader 컴포넌트는 항상 렌더링하며, userDetail을 게시물에서 가져옵니다. */}
       <ProfileHeader userDetail={userProfile} token={token} />
