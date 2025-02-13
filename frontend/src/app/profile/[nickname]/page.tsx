@@ -6,7 +6,7 @@ import BackButton from "../BackButton";
 import ProfileInfo from "./ProfileInfo";
 import { useParams } from "next/navigation";
 import { cookies } from "next/headers";
-import LogoutButton from "@/components/LogOutButton";
+import LogoutButton from "@/components/LogoutButton";
 
 // UserResponse와 PostsByNickName 타입 정의
 export interface UserResponse {
