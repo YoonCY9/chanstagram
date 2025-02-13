@@ -103,6 +103,7 @@ export default async function ProfilePage(props: {
       {/* ProfileHeader 컴포넌트는 항상 렌더링하며, userDetail을 게시물에서 가져옵니다. */}
       <ProfileHeader userDetail={userProfile} token={token} />
       <ProfileInfo
+        nickname={userProfile.nickName}
         postCount={postsData.length}
         followers={followersData}
         following={followingData}
