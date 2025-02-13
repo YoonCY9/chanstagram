@@ -50,10 +50,10 @@ export default function Page() {
 
   return (
     <>
-      <header className="flex items-center justify-between px-4 py-2 bg-white shadow-md">
+      <header className="flex items-center justify-between px-4 py-3 bg-white border-b border-gray-200 sticky top-0 z-10">
         <button
           onClick={() => router.push("/home")}
-          className="text-xl font-bold"
+          className="text-xl font-bold text-gray-800 hover:text-gray-600 transition-colors"
         >
           Chanstagram
         </button>
@@ -61,13 +61,18 @@ export default function Page() {
       <div className="p-4">
         {/* form의 action 속성에 서버 액션을 지정합니다. */}
         <form action={createPostAction}>
-          <textarea
-            placeholder="내용을 입력해주세요."
-            name="content"
-            value={postData.content}
-            onChange={handleChange}
-            className="border border-gray-400 w-full p-4 h-64"
-          />
+          <div className="bg-white rounded-xl shadow-[0_2px_12px_-3px_rgba(0,0,0,0.1)]">
+            <textarea
+              placeholder="오늘의 이야기를 공유해보세요..."
+              name="content"
+              value={postData.content}
+              onChange={handleChange}
+              className="w-full p-4 h-64 text-sm resize-none
+                      border-none focus:ring-0
+                      placeholder-gray-400
+                      focus:outline-none"
+            />
+          </div>
           <div className="p-6 border border-gray-600 mt-4">
             <input
               type="file"
@@ -89,12 +94,17 @@ export default function Page() {
           <button
             type="submit"
             disabled={imgUploading}
-            className={`mt-4 flex items-center gap-2 px-4 py-2 bg-blue-500 text-white shadow-md hover:bg-blue-600 focus:ring-2 focus:ring-blue-400 transition ${
-              imgUploading ? "opacity-50 cursor-not-allowed" : ""
-            }`}
+            className={`w-full py-3 px-6 rounded-lg font-medium text-white 
+    transition-all duration-200
+    mt-8  // 상단 여백 2rem 추가
+    ${
+      imgUploading
+        ? "bg-blue-300 cursor-not-allowed"
+        : "bg-blue-500 hover:bg-blue-600 active:scale-[0.98]"
+    }`}
             onClick={() => router.push("/home")}
           >
-            {imgUploading ? "업로드 중..." : "업로드"}
+            {imgUploading ? "업로드 중..." : "게시하기"}
           </button>
         </form>
       </div>
