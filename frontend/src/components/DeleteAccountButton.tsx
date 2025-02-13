@@ -33,7 +33,7 @@ export default function DeleteAccountButton() {
   return (
     <button
       onClick={handleDeleteAccount}
-      className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white font-semibold rounded-full shadow hover:bg-red-700 transition duration-300"
+      className="flex items-center text-xs size-15  gap-1 p-1 bg-gray-500 text-white font-semibold rounded-full shadow hover:bg-red-700 transition duration-300"
     >
       {/* 휴지통 아이콘 (Heroicons) */}
       <svg

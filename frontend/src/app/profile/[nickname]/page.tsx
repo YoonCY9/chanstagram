@@ -96,11 +96,14 @@ export default async function ProfilePage(props: {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <BackButton />
-      <div className="flex justify-end px-4 py-2">
-        <LogoutButton />
-        <DeleteAccountButton />
+      <div className="flex">
+        <BackButton />
+        <div className="flex ml-auto">
+          <LogoutButton />
+          <DeleteAccountButton />{" "}
+        </div>
       </div>
+      <div className="flex justify-end px-4 py-2"></div>
       {/* ProfileHeader 컴포넌트는 항상 렌더링하며, userDetail을 게시물에서 가져옵니다. */}
       <ProfileHeader userDetail={userProfile} token={token} />
       <ProfileInfo
