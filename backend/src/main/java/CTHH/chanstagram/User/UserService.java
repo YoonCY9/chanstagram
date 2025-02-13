@@ -3,6 +3,7 @@ package CTHH.chanstagram.User;
 import CTHH.chanstagram.Comment.CommentRepository;
 import CTHH.chanstagram.SecurityUtils;
 import CTHH.chanstagram.User.DTO.*;
+import CTHH.chanstagram.follow.FollowRepository;
 import CTHH.chanstagram.post.Post;
 import CTHH.chanstagram.post.PostRepository;
 import jakarta.transaction.Transactional;
@@ -18,13 +19,15 @@ public class UserService {
     private final JwtProvider jwtProvider;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final FollowRepository followRepository;
 
     public UserService(UserRepository userRepository, JwtProvider jwtProvider,
-                       PostRepository postRepository, CommentRepository commentRepository) {
+                       PostRepository postRepository, CommentRepository commentRepository, FollowRepository followRepository) {
         this.userRepository = userRepository;
         this.jwtProvider = jwtProvider;
         this.postRepository = postRepository;
         this.commentRepository = commentRepository;
+        this.followRepository = followRepository;
     }
 
     //회원가입
@@ -118,6 +121,19 @@ public class UserService {
                 user.getContent(),
                 user.getProfileImage(),
                 user.getPhoneNumber());
+    }
+
+    public UserfollowResponse getUserInfoByNickname(String nickName,User me) {
+        User byNickName = userRepository.findByNickName(nickName);
+        boolean follow = followRepository.existsByFollowerAndFollowee(me, byNickName);
+        return new UserfollowResponse(byNickName.getNickName(), byNickName.getProfileImage(),follow);
+    }
+
+    public UserResponse getUserInfoByloginId(String loginId) {
+        User user = userRepository.findByLoginId(loginId).orElseThrow(
+                () -> new NoSuchElementException("해당하는 유저가 없습니다.")
+        );
+        return new UserResponse(user.getNickName(), user.getProfileImage());
     }
 }
 

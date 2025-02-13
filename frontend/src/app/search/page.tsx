@@ -1,4 +1,9 @@
-import { Search } from "lucide-react";
+       "use client";
+        import { Search } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import Underbar from "./Underbar";
+
 
 interface PostResponse {
   content: string;

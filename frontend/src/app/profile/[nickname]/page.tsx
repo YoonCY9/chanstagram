@@ -1,16 +1,18 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import ProfileHeader from "./ProfileHeader";
-import ProfileInfo from "./ProfileInfo";
 import ProfileTabs from "./ProfileTabs";
 import ProfilePosts from "./ProfilePosts";
 import BackButton from "../BackButton";
+import ProfileInfo from "./ProfileInfo";
+import { useParams } from "next/navigation";
+import { cookies } from "next/headers";
+import LogoutButton from "@/components/LogoutButton";
 
 // UserResponse와 PostsByNickName 타입 정의
 export interface UserResponse {
   nickName: string;
   profileImage: string;
+  following: boolean;
 }
 
 export interface PostsByNickName {
@@ -22,60 +24,93 @@ export interface PostsByNickName {
   createdTime: string;
   updatedTime: string;
 }
+export interface FollowResponse {
+  userName: string;
+  nickName: string;
+  profileImage: string;
+}
 
 const apiBaseUrl = `http://localhost:8080`;
 
 // 게시물 데이터를 가져오는 함수
-async function fetchPostsByNickName(nickname: string): Promise<PostsByNickName[]> {
+async function fetchPostsByNickName(
+  nickname: string,
+): Promise<PostsByNickName[]> {
   const response = await fetch(`${apiBaseUrl}/posts/${nickname}`);
+
   if (!response.ok) {
-    throw new Error('게시물을 가져오는 데 실패했습니다.');
+    throw new Error("게시물을 가져오는 데 실패했습니다.");
   }
-  return response.json();
+  const data = await response.json();
+  return data;
+}
+async function fetchUsersByNickName(nickname: string): Promise<UserResponse> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+  const response = await fetch(`${apiBaseUrl}/users/nickName/${nickname}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("유저 정보를 가져오는 데 실패했습니다.");
+  }
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+async function fetchFollowersByNickName(
+  nickname: string,
+): Promise<FollowResponse[]> {
+  const response = await fetch(`${apiBaseUrl}/follows/followers/{nickName}`);
+
+  if (!response.ok) {
+    throw new Error("팔로워리스트를 가져오는 데 실패했습니다.");
+  }
+  const data = await response.json();
+
+  return data;
+}
+async function fetchFollowingByNickName(
+  nickname: string,
+): Promise<FollowResponse[]> {
+  const response = await fetch(`${apiBaseUrl}/follows/followees/{nickName}`);
+
+  if (!response.ok) {
+    throw new Error("팔로잉리스트를 가져오는 데 실패했습니다.");
+  }
+  const data = await response.json();
+
+  return data;
 }
 
-export default function ProfilePage({ params }: { params: { nickname: string } }) {
-  const [userDetail, setUserDetail] = useState<UserResponse | null>(null);
-  const [posts, setPosts] = useState<PostsByNickName[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const nickname = params.nickname;
-
-    const fetchData = async () => {
-      try {
-        // 게시물 데이터를 가져옴
-        const postsData = await fetchPostsByNickName(nickname);
-
-        // 게시물 데이터에서 첫 번째 게시물의 user 정보를 가져와서 사용자 프로필로 설정
-        if (postsData.length > 0) {
-          const userProfile = postsData[0].user; // 첫 번째 게시물의 user 정보를 가져옴
-          setUserDetail(userProfile);
-        }
-
-        setPosts(postsData);
-        setIsLoading(false);
-      } catch (err) {
-        setError("데이터를 가져오는 데 실패했습니다.");
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [params.nickname]);
-
-  if (isLoading) return <div>로딩 중...</div>;
-  if (error) return <div>오류: {error}</div>;
-  if (posts.length === 0) return <div>게시물이 없습니다.</div>;
+export default async function ProfilePage(props: {
+  params: Promise<{ nickname: string }>;
+}) {
+  const nickname = (await props.params).nickname;
+  const userProfile = await fetchUsersByNickName(nickname);
+  const postsData = await fetchPostsByNickName(nickname);
+  const followersData = await fetchFollowersByNickName(nickname);
+  const followingData = await fetchFollowingByNickName(nickname);
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
 
   return (
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <BackButton />
-        {userDetail && <ProfileHeader userDetail={userDetail} />}
-        <ProfileInfo postCount={posts.length} />
-        <ProfileTabs />
-        <ProfilePosts posts={posts} />
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      <BackButton />
+      <div className="flex justify-end px-4 py-2">
+        <LogoutButton />
       </div>
+      {/* ProfileHeader 컴포넌트는 항상 렌더링하며, userDetail을 게시물에서 가져옵니다. */}
+      <ProfileHeader userDetail={userProfile} token={token} />
+      <ProfileInfo
+        postCount={postsData.length}
+        followers={followersData}
+        following={followingData}
+      />
+      <ProfileTabs />
+      <ProfilePosts posts={postsData} /> {/* 게시물 리스트 전달 */}
+    </div>
   );
 }

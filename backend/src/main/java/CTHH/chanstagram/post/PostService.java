@@ -1,8 +1,6 @@
 package CTHH.chanstagram.post;
 
-import CTHH.chanstagram.Comment.Comment;
-import CTHH.chanstagram.Comment.CommentDetailedResponse;
-import CTHH.chanstagram.Comment.CommentRepository;
+import CTHH.chanstagram.Comment.*;
 import CTHH.chanstagram.User.DTO.UserResponse;
 import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.User.UserRepository;
@@ -103,18 +101,18 @@ public class PostService {
                 )).toList();
     }
 
-    public List<PostResponse> findAll(int page,int size,String criteria,String keyword) { // 게시글 전체조회
-        return postQueryRepository.findAll(page,size,criteria,keyword).stream()
+    public List<PostResponse> findAll(int page, int size, String criteria, String keyword) { // 게시글 전체조회
+        return postQueryRepository.findAll(page, size, criteria, keyword).stream()
                 .map(p -> new PostResponse(
-                p.getId(),
-                p.getContent(),
-                p.getCommentCount(),
-                p.getImageUrl(),
-                new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
-                p.getCreatedTime(),
-                p.getUpdatedTime(),
-                p.getLikeCount()
-        )).toList();
+                        p.getId(),
+                        p.getContent(),
+                        p.getCommentCount(),
+                        p.getImageUrl(),
+                        new UserResponse(p.getUser().getNickName(), p.getUser().getProfileImage()),
+                        p.getCreatedTime(),
+                        p.getUpdatedTime(),
+                        p.getLikeCount()
+                )).toList();
 
     }
 
@@ -201,5 +199,17 @@ public class PostService {
                         p.getUpdatedTime(),
                         p.getLikeCount()
                 )).toList();
+    }
+
+    public CommentListResponse findByPostIdComments(Long postId) {
+        List<Comment> byPostId = commentRepository.findByPostId(postId);
+        return new CommentListResponse(byPostId.stream()
+                .map(comment -> new CommentResponse(
+                        comment.getId(),
+                        comment.getContent(),
+                        comment.getPost().getId(),
+                        comment.getUser().getLoginId(),
+                        comment.getLikeCommentCount())
+                ).toList());
     }
 }

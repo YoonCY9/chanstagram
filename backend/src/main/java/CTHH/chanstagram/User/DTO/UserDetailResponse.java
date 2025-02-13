@@ -10,7 +10,7 @@ public record UserDetailResponse(
         String loginId,
         String password,
         Gender gender,
-        LocalDate bitrh,
+        LocalDate birth,
         String content,
         String profileImage,
         String phoneNumber
