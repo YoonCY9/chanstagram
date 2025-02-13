@@ -60,7 +60,7 @@ export default function Page() {
       </header>
       <div className="p-4">
         {/* form의 action 속성에 서버 액션을 지정합니다. */}
-        <form action={createPostAction} method="POST">
+        <form action={createPostAction}>
           <textarea
             placeholder="내용을 입력해주세요."
             name="content"
@@ -80,7 +80,7 @@ export default function Page() {
               <p className="text-blue-500">이미지 업로드 중...</p>
             )}
           </div>
-          {/* 서버 액션으로 전달할 이미지 URL 목록을 hidden input에 JSON 문자열로 담습니다 */}
+
           <input
             type="hidden"
             name="imageUrl"
