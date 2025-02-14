@@ -170,28 +170,51 @@ const Home = () => {
               </div>
 
               {/* 액션 버튼 그룹 */}
-              <div className="px-4 py-2 flex items-center justify-between border-t border-gray-100">
-                <button
-                  onClick={() => handleLike(index)}
-                  className="p-1 hover:scale-110 transition-transform"
-                >
-                  <svg
-                    className={`w-7 h-7 ${user.isLiked ? "text-red-500 fill-current" : "text-gray-600"}`}
-                    // ... 기존 SVG 경로 유지
-                  />
-                </button>
-                <div className="flex items-center space-x-4">
-                  <Link href={`/comments/${user.postId}`}>
-                    <p className="text-gray-600 text-sm hover:text-blue-500 hover:underline transition-colors">
-                      💬 {user.likeCount > 0 ? user.likeCount : ""} 댓글 보기
-                    </p>
-                  </Link>
-                  <Link href={`/updatepost?postId=${user.postId}`}>
-                    <p className="text-gray-600 text-sm hover:text-blue-500 hover:underline transition-colors">
-                      ✏️ 수정
-                    </p>
-                  </Link>
-                  <DeleteButton postId={user.postId} />
+              <div className="px-4 py-2 border-t border-gray-100">
+                <div className="flex items-center justify-between">
+                  {/* 왼쪽: 좋아요 버튼 */}
+                  <button
+                    onClick={() => handleLike(index)}
+                    className="flex items-center space-x-1 p-1 hover:scale-110 transition-transform"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="w-7 h-7"
+                      fill={user.likeCount === 0 ? "white" : "currentColor"}
+                      stroke={user.likeCount === 0 ? "currentColor" : "none"}
+                      strokeWidth={user.likeCount === 0 ? 2 : 0}
+                      style={{
+                        color: user.likeCount === 0 ? "#4B5563" : "#EF4444",
+                      }}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+                 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81
+                 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55
+                 11.54L12 21.35z"
+                      />
+                    </svg>
+                    <span className="text-gray-600 text-sm">
+                      좋아요 {user.likeCount}
+                    </span>
+                  </button>
+
+                  {/* 오른쪽: 댓글 보기, 수정, 삭제 링크 그룹 */}
+                  <div className="flex items-center space-x-4">
+                    <Link href={`/comments/${user.postId}`}>
+                      <p className="text-gray-600 text-sm hover:text-blue-500 hover:underline transition-colors">
+                        💬 댓글 보기
+                      </p>
+                    </Link>
+                    <Link href={`/updatepost?postId=${user.postId}`}>
+                      <p className="text-gray-600 text-sm hover:text-blue-500 hover:underline transition-colors">
+                        ✏️ 수정
+                      </p>
+                    </Link>
+                    <DeleteButton postId={user.postId} />
+                  </div>
                 </div>
               </div>
             </div>
