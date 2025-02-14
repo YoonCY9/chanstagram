@@ -7,7 +7,6 @@ import CTHH.chanstagram.User.DTO.LoginResponse;
 import CTHH.chanstagram.User.DTO.UserDetailRequest;
 import CTHH.chanstagram.User.Gender;
 import CTHH.chanstagram.post.DTO.CreatePost;
-import CTHH.chanstagram.post.DTO.PostDetailedResponse;
 import CTHH.chanstagram.post.DTO.PostResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -16,13 +15,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class postTest {

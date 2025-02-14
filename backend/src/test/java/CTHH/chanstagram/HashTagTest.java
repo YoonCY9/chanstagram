@@ -7,7 +7,6 @@ import CTHH.chanstagram.User.Gender;
 import CTHH.chanstagram.hashTag.HashTag;
 import CTHH.chanstagram.hashTag.HashTagRepository;
 import CTHH.chanstagram.post.DTO.CreatePost;
-import CTHH.chanstagram.post.DTO.PostListResponse;
 import CTHH.chanstagram.post.DTO.PostResponse;
 import CTHH.chanstagram.post.postHashTag.PostHashTagRepository;
 import io.restassured.RestAssured;
@@ -22,8 +21,6 @@ import org.springframework.http.HttpHeaders;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import static com.mysema.commons.lang.Assert.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class HashTagTest {

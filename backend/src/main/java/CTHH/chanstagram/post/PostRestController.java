@@ -6,10 +6,6 @@ import CTHH.chanstagram.User.User;
 import CTHH.chanstagram.post.DTO.*;
 
 import CTHH.chanstagram.post.postHashTag.PostHashTagService;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 

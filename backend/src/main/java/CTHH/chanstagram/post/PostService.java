@@ -9,12 +9,8 @@ import CTHH.chanstagram.hashTag.HashTagService;
 import CTHH.chanstagram.post.DTO.*;
 import CTHH.chanstagram.post.postHashTag.PostHashTagService;
 import jakarta.transaction.Transactional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.NoSuchElementException;
 

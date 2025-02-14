@@ -11,7 +11,6 @@ import CTHH.chanstagram.post.DTO.PostDetailedResponse;
 import CTHH.chanstagram.post.DTO.PostResponse;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

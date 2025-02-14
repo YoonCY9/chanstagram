@@ -1,7 +1,6 @@
 package CTHH.chanstagram.post.DTO;
 
 import CTHH.chanstagram.User.DTO.UserResponse;
-import CTHH.chanstagram.User.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
