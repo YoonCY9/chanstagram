@@ -3,7 +3,6 @@ package CTHH.chanstagram.User;
 import CTHH.chanstagram.BaseEntity;
 import CTHH.chanstagram.SecurityUtils;
 import jakarta.persistence.*;
-import org.hibernate.annotations.GeneratedColumn;
 
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
